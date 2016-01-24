@@ -1,0 +1,6 @@
+name: zBanque
+version: 1.0-SNAPSHOT
+description: Bank manager
+main: fr.zcraft.zbanque.ZBanque
+
+author: Amaury Carrade

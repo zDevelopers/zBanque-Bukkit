@@ -31,7 +31,94 @@
  */
 package fr.zcraft.zbanque;
 
+import fr.zcraft.zbanque.utils.BlockUtils;
+import fr.zcraft.zlib.components.configuration.ConfigurationItem;
+import fr.zcraft.zlib.tools.PluginLogger;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+
+
 public class Config
 {
+    public static final ConfigurationItem<String> BANK_WORLD_RAW    = ConfigurationItem.item("bank.world", "world");
+    public static final ConfigurationItem<String> BANK_CORNER_1_RAW = ConfigurationItem.item("bank.firstCorner", "");
+    public static final ConfigurationItem<String> BANK_CORNER_2_RAW = ConfigurationItem.item("bank.otherCorner", "");
 
+
+    // --- Computed values
+
+    private static Location BANK_LOWEST_CORNER = null;
+    private static Location BANK_HIGHEST_CORNER = null;
+
+
+    /**
+     * Initializes the configuration, computing values if needed.
+     */
+    static void initialize()
+    {
+        final World world = Bukkit.getWorld(BANK_WORLD_RAW.get());
+        if (world == null)
+        {
+            PluginLogger.error("Cannot load bank corners: the world {0} does not exists.", BANK_WORLD_RAW.get());
+            ZBanque.get().abort();
+            return;
+        }
+
+        try
+        {
+            Location corner1 = BlockUtils.string2Location(world, BANK_CORNER_1_RAW.get());
+            Location corner2 = BlockUtils.string2Location(world, BANK_CORNER_2_RAW.get());
+
+            updateBankCorners(corner1, corner2);
+        }
+        catch (IllegalArgumentException e)
+        {
+            PluginLogger.error("Cannot load bank corners: invalid corner coordinates.");
+            ZBanque.get().abort();
+            return;
+        }
+    }
+
+    /**
+     * Updates the bank corners.
+     *
+     * @param corner1 The first corner.
+     * @param corner2 The other corner.
+     *
+     * @throws IllegalArgumentException if the two locations are not in the same world.
+     */
+    public static void updateBankCorners(Location corner1, Location corner2)
+    {
+        Validate.isTrue(corner1.getWorld().equals(corner2.getWorld()), "The corners must be in the same world");
+
+        BANK_HIGHEST_CORNER = new Location(
+                corner1.getWorld(),
+                Math.max(corner1.getX(), corner2.getX()),
+                Math.max(corner1.getY(), corner2.getY()),
+                Math.max(corner1.getZ(), corner2.getZ())
+        );
+
+        BANK_LOWEST_CORNER = new Location(
+                corner1.getWorld(),
+                Math.min(corner1.getX(), corner2.getX()),
+                Math.min(corner1.getY(), corner2.getY()),
+                Math.min(corner1.getZ(), corner2.getZ())
+        );
+
+        BANK_WORLD_RAW.set(corner1.getWorld().getName());
+        BANK_CORNER_1_RAW.set(BlockUtils.location2String(BANK_HIGHEST_CORNER));
+        BANK_CORNER_2_RAW.set(BlockUtils.location2String(BANK_LOWEST_CORNER));
+    }
+
+    public static Location getBankLowestCorner()
+    {
+        return BANK_LOWEST_CORNER;
+    }
+
+    public static Location getBankHighestCorner()
+    {
+        return BANK_HIGHEST_CORNER;
+    }
 }

@@ -35,6 +35,8 @@ import fr.zcraft.zlib.components.commands.Commands;
 import fr.zcraft.zlib.components.configuration.Configuration;
 import fr.zcraft.zlib.components.i18n.I18n;
 import fr.zcraft.zlib.core.ZPlugin;
+import fr.zcraft.zlib.tools.PluginLogger;
+import org.bukkit.Location;
 
 import java.util.Locale;
 
@@ -42,6 +44,9 @@ import java.util.Locale;
 public class ZBanque extends ZPlugin
 {
     private static ZBanque INSTANCE;
+
+    private Location bankLowestCorner  = null;
+    private Location bankHighestCorner = null;
 
     @Override
     public void onEnable()
@@ -53,9 +58,29 @@ public class ZBanque extends ZPlugin
         I18n.useDefaultPrimaryLocale();
         I18n.setFallbackLocale(Locale.US);
 
+        saveDefaultConfig();
         Configuration.init(Config.class);
+        Config.initialize();
     }
 
+    public Location getBankLowestCorner()
+    {
+        return bankLowestCorner;
+    }
+
+    public Location getBankHighestCorner()
+    {
+        return bankHighestCorner;
+    }
+
+    /**
+     * Aborts the plugin, if a fatal error occurs while loading.
+     */
+    void abort()
+    {
+        PluginLogger.error("A fatal error occurred. Aborting.");
+        setEnabled(false);
+    }
 
     public static ZBanque get()
     {

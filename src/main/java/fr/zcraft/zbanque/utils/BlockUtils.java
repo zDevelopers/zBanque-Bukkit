@@ -31,7 +31,9 @@
  */
 package fr.zcraft.zbanque.utils;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 
 public final class BlockUtils
@@ -47,5 +49,46 @@ public final class BlockUtils
     public static Location cloneLocationToBlock(Location location)
     {
         return new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+    }
+
+    /**
+     * Converts a string location (format "x;y;z" or "x;y;z;pitch" or "x;y;z;pitch;yaw") to a location object.
+     *
+     * @param world The world.
+     * @param raw The raw string.
+     * @return The location.
+     * @throws IllegalArgumentException if the format is not valid.
+     */
+    public static Location string2Location(World world, String raw)
+    {
+        String[] parts = raw.split(";");
+        Validate.isTrue(parts.length >= 3, "The location must contains at least three coordinates.");
+
+        Location location = new Location(
+                world,
+                Double.valueOf(parts[0]),
+                Double.valueOf(parts[1]),
+                Double.valueOf(parts[2])
+        );
+
+        if (parts.length >= 4)
+            location.setPitch(Float.valueOf(parts[3]));
+
+        if (parts.length >= 5)
+            location.setYaw(Float.valueOf(parts[4]));
+
+        return location;
+    }
+
+    /**
+     * Converts a location to a string compatible with {@link #string2Location(World, String)}.
+     *
+     * @param location The location.
+     * @return The string version.
+     * @see #string2Location(World, String) for the string format.
+     */
+    public static String location2String(Location location)
+    {
+        return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getPitch() + ";" + location.getYaw();
     }
 }

@@ -29,36 +29,23 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque;
+package fr.zcraft.zbanque.utils;
 
-import fr.zcraft.zlib.components.commands.Commands;
-import fr.zcraft.zlib.components.configuration.Configuration;
-import fr.zcraft.zlib.components.i18n.I18n;
-import fr.zcraft.zlib.core.ZPlugin;
-
-import java.util.Locale;
+import org.bukkit.Location;
 
 
-public class ZBanque extends ZPlugin
+public final class BlockUtils
 {
-    private static ZBanque INSTANCE;
+    private BlockUtils() {}
 
-    @Override
-    public void onEnable()
+    /**
+     * Clones a location to a new one with block coordinates.
+     *
+     * @param location The cloned location.
+     * @return The location with block coordinates only.
+     */
+    public static Location cloneLocationToBlock(Location location)
     {
-        INSTANCE = this;
-
-        loadComponents(I18n.class, Commands.class);
-
-        I18n.useDefaultPrimaryLocale();
-        I18n.setFallbackLocale(Locale.US);
-
-        Configuration.init(Config.class);
-    }
-
-
-    public static ZBanque get()
-    {
-        return INSTANCE;
+        return new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 }

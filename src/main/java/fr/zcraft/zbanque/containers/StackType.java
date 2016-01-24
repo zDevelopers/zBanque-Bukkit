@@ -29,36 +29,69 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque;
+package fr.zcraft.zbanque.containers;
 
-import fr.zcraft.zlib.components.commands.Commands;
-import fr.zcraft.zlib.components.configuration.Configuration;
-import fr.zcraft.zlib.components.i18n.I18n;
-import fr.zcraft.zlib.core.ZPlugin;
-
-import java.util.Locale;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 
-public class ZBanque extends ZPlugin
+/**
+ * An item type.
+ */
+public class StackType
 {
-    private static ZBanque INSTANCE;
+    private Material type;
+    private byte data;
 
-    @Override
-    public void onEnable()
+    public StackType(Material type, byte data)
     {
-        INSTANCE = this;
+        Validate.notNull(type, "The block type cannot be null");
 
-        loadComponents(I18n.class, Commands.class);
+        this.type = type;
+        this.data = data;
+    }
 
-        I18n.useDefaultPrimaryLocale();
-        I18n.setFallbackLocale(Locale.US);
+    public StackType(ItemStack stack)
+    {
+        this(stack.getType(), stack.getData().getData());
+    }
 
-        Configuration.init(Config.class);
+    public Material getType()
+    {
+        return type;
+    }
+
+    public void setType(Material type)
+    {
+        this.type = type;
+    }
+
+    public byte getData()
+    {
+        return data;
+    }
+
+    public void setData(byte data)
+    {
+        this.data = data;
     }
 
 
-    public static ZBanque get()
+    @Override
+    public boolean equals(Object o)
     {
-        return INSTANCE;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StackType stackType = (StackType) o;
+
+        return data == stackType.data && type == stackType.type;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return 31 * type.hashCode() + (int) data;
     }
 }

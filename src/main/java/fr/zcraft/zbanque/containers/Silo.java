@@ -29,36 +29,55 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque;
+package fr.zcraft.zbanque.containers;
 
-import fr.zcraft.zlib.components.commands.Commands;
-import fr.zcraft.zlib.components.configuration.Configuration;
-import fr.zcraft.zlib.components.i18n.I18n;
-import fr.zcraft.zlib.core.ZPlugin;
-
-import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
-public class ZBanque extends ZPlugin
+/**
+ * A set of chests linked together.
+ *
+ * <p>This is the main storage used here. A single chest is represented by a silo with a single
+ * chest inside.</p>
+ *
+ * @see Chest The storage units.
+ */
+public class Silo
 {
-    private static ZBanque INSTANCE;
+    /**
+     * The main output of the silo, where users take the resources.
+     */
+    private Chest mainOutput;
 
-    @Override
-    public void onEnable()
+    /**
+     * The chests contained in this silo.
+     */
+    private final Set<Chest> chests = new CopyOnWriteArraySet<>();
+
+
+    public Chest getMainOutput()
     {
-        INSTANCE = this;
-
-        loadComponents(I18n.class, Commands.class);
-
-        I18n.useDefaultPrimaryLocale();
-        I18n.setFallbackLocale(Locale.US);
-
-        Configuration.init(Config.class);
+        return mainOutput;
     }
 
-
-    public static ZBanque get()
+    public void setMainOutput(Chest mainOutput)
     {
-        return INSTANCE;
+        this.mainOutput = mainOutput;
+    }
+
+    public Set<Chest> getChests()
+    {
+        return chests;
+    }
+
+    public void addChest(Chest chest)
+    {
+        chests.add(chest);
+    }
+
+    public void removeChest(Chest chest)
+    {
+        chests.remove(chest);
     }
 }

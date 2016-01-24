@@ -31,34 +31,7 @@
  */
 package fr.zcraft.zbanque;
 
-import fr.zcraft.zlib.components.commands.Commands;
-import fr.zcraft.zlib.components.configuration.Configuration;
-import fr.zcraft.zlib.components.i18n.I18n;
-import fr.zcraft.zlib.core.ZPlugin;
-
-import java.util.Locale;
-
-
-public class ZBanque extends ZPlugin
+public class Config
 {
-    private static ZBanque INSTANCE;
 
-    @Override
-    public void onEnable()
-    {
-        INSTANCE = this;
-
-        loadComponents(I18n.class, Commands.class);
-
-        I18n.useDefaultPrimaryLocale();
-        I18n.setFallbackLocale(Locale.US);
-
-        Configuration.init(Config.class);
-    }
-
-
-    public static ZBanque get()
-    {
-        return INSTANCE;
-    }
 }

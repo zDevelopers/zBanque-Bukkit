@@ -1,5 +1,5 @@
 bank:
     # The bank's location.
     world: "world"
-    firstCorner: "-10;-10;-10"
-    otherCorner: "10;10;10"
+    firstCorner: "-10;0;-10"
+    otherCorner: "10;60;10"

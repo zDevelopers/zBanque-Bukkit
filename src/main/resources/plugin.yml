@@ -4,3 +4,33 @@ description: Bank manager
 main: fr.zcraft.zbanque.ZBanque
 
 author: Amaury Carrade
+
+
+commands:
+    zbanque:
+        description: "Manages the zBanque plugin"
+        aliases:
+            - banque
+
+
+# Permissions section generated using http://amaury.carrade.eu/tools/generators/bukkit/permissions.html
+permissions:
+    zbanque.*:
+        description: "Gives all the zBank permissions"
+        default: op
+        children:
+            zbanque.update-structure: true
+            zbanque.see-structure: true
+            zbanque.see-content: true
+
+    zbanque.update-structure:
+        description: "Updates the bank structure"
+        default: op
+
+    zbanque.see-structure:
+        description: "Allows to see the bank structure"
+        default: op
+
+    zbanque.see-content:
+        description: "Allows to see the bank content (aggregated)"
+        default: true

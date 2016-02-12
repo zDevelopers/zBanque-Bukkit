@@ -29,58 +29,37 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque;
+package fr.zcraft.zbanque.commands;
 
-import fr.zcraft.zbanque.commands.ContentViewCommand;
-import fr.zcraft.zbanque.commands.StructureUpdateCommand;
-import fr.zcraft.zbanque.commands.StructureViewCommand;
-import fr.zcraft.zlib.components.commands.Commands;
-import fr.zcraft.zlib.components.configuration.Configuration;
-import fr.zcraft.zlib.components.i18n.I18n;
-import fr.zcraft.zlib.core.ZPlugin;
-import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.zbanque.Permissions;
+import fr.zcraft.zbanque.structure.BankStructure;
+import fr.zcraft.zlib.components.commands.Command;
+import fr.zcraft.zlib.components.commands.CommandException;
+import fr.zcraft.zlib.components.commands.CommandInfo;
+import org.bukkit.command.CommandSender;
 
-import java.util.Locale;
+import java.util.Collections;
+import java.util.List;
 
 
-public class ZBanque extends ZPlugin
+@CommandInfo (name = "update-structure", usageParameters = "[verbose]")
+public class StructureUpdateCommand extends Command
 {
-    private static ZBanque INSTANCE;
-
-    @SuppressWarnings ("unchecked")
     @Override
-    public void onEnable()
+    protected void run() throws CommandException
     {
-        INSTANCE = this;
-
-        loadComponents(I18n.class, Commands.class);
-
-        I18n.useDefaultPrimaryLocale();
-        I18n.setFallbackLocale(Locale.US);
-
-        saveDefaultConfig();
-        Configuration.init(Config.class);
-        Config.initialize();
-
-        Commands.register(
-                "zbanque",
-                ContentViewCommand.class,
-                StructureViewCommand.class,
-                StructureUpdateCommand.class
-        );
+        BankStructure.get().updateStructure(sender, args.length > 0 && args[0].equalsIgnoreCase("verbose"));
     }
 
-    /**
-     * Aborts the plugin, if a fatal error occurs while loading.
-     */
-    void abort()
+    @Override
+    protected List<String> complete() throws CommandException
     {
-        PluginLogger.error("A fatal error occurred. Aborting.");
-        setEnabled(false);
+        return args.length == 1 ? getMatchingSubset(Collections.singletonList("verbose"), args[0]) : null;
     }
 
-    public static ZBanque get()
+    @Override
+    public boolean canExecute(CommandSender sender)
     {
-        return INSTANCE;
+        return Permissions.UPDATE_STRUCTURE.isGrantedTo(sender);
     }
 }

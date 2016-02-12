@@ -31,56 +31,43 @@
  */
 package fr.zcraft.zbanque;
 
-import fr.zcraft.zbanque.commands.ContentViewCommand;
-import fr.zcraft.zbanque.commands.StructureUpdateCommand;
-import fr.zcraft.zbanque.commands.StructureViewCommand;
-import fr.zcraft.zlib.components.commands.Commands;
-import fr.zcraft.zlib.components.configuration.Configuration;
-import fr.zcraft.zlib.components.i18n.I18n;
-import fr.zcraft.zlib.core.ZPlugin;
-import fr.zcraft.zlib.tools.PluginLogger;
-
-import java.util.Locale;
+import org.bukkit.permissions.Permissible;
 
 
-public class ZBanque extends ZPlugin
+public enum Permissions
 {
-    private static ZBanque INSTANCE;
+    SEE_CONTENT("zbanque.see-content"),
+    SEE_STRUCTURE("zbanque.see-structure"),
+    UPDATE_STRUCTURE("zbanque.update-structure");
 
-    @SuppressWarnings ("unchecked")
-    @Override
-    public void onEnable()
+
+    private final String permission;
+
+    Permissions(String permission)
     {
-        INSTANCE = this;
+        this.permission = permission;
+    }
 
-        loadComponents(I18n.class, Commands.class);
 
-        I18n.useDefaultPrimaryLocale();
-        I18n.setFallbackLocale(Locale.US);
-
-        saveDefaultConfig();
-        Configuration.init(Config.class);
-        Config.initialize();
-
-        Commands.register(
-                "zbanque",
-                ContentViewCommand.class,
-                StructureViewCommand.class,
-                StructureUpdateCommand.class
-        );
+    /**
+     * @return the permission's name.
+     */
+    public String getPermission()
+    {
+        return permission;
     }
 
     /**
-     * Aborts the plugin, if a fatal error occurs while loading.
+     * Checks if this permission is granted to the given permissible.
+     *
+     * @param permissible The permissible to check.
+     *
+     * @return {@code true} if this permission is granted to the permissible.
      */
-    void abort()
+    public boolean isGrantedTo(Permissible permissible)
     {
-        PluginLogger.error("A fatal error occurred. Aborting.");
-        setEnabled(false);
-    }
-
-    public static ZBanque get()
-    {
-        return INSTANCE;
+        return permissible.hasPermission(permission);
     }
 }
+
+

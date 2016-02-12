@@ -31,7 +31,7 @@
  */
 package fr.zcraft.zbanque;
 
-import fr.zcraft.zbanque.utils.BlockUtils;
+import fr.zcraft.zbanque.utils.LocationUtils;
 import fr.zcraft.zlib.components.configuration.ConfigurationItem;
 import fr.zcraft.zlib.tools.PluginLogger;
 import org.apache.commons.lang.Validate;
@@ -42,7 +42,7 @@ import org.bukkit.World;
 
 public class Config
 {
-    public static final ConfigurationItem<String> BANK_WORLD_RAW    = ConfigurationItem.item("bank.world", "world");
+    public static final ConfigurationItem<String> BANK_WORLD_RAW = ConfigurationItem.item("bank.world", "world");
     public static final ConfigurationItem<String> BANK_CORNER_1_RAW = ConfigurationItem.item("bank.firstCorner", "");
     public static final ConfigurationItem<String> BANK_CORNER_2_RAW = ConfigurationItem.item("bank.otherCorner", "");
 
@@ -68,8 +68,8 @@ public class Config
 
         try
         {
-            Location corner1 = BlockUtils.string2Location(world, BANK_CORNER_1_RAW.get());
-            Location corner2 = BlockUtils.string2Location(world, BANK_CORNER_2_RAW.get());
+            Location corner1 = LocationUtils.string2Location(world, BANK_CORNER_1_RAW.get());
+            Location corner2 = LocationUtils.string2Location(world, BANK_CORNER_2_RAW.get());
 
             updateBankCorners(corner1, corner2);
         }
@@ -96,20 +96,20 @@ public class Config
         BANK_HIGHEST_CORNER = new Location(
                 corner1.getWorld(),
                 Math.max(corner1.getX(), corner2.getX()),
-                Math.max(corner1.getY(), corner2.getY()),
+                Math.min(Math.max(corner1.getY(), corner2.getY()), corner1.getWorld().getMaxHeight()),
                 Math.max(corner1.getZ(), corner2.getZ())
         );
 
         BANK_LOWEST_CORNER = new Location(
                 corner1.getWorld(),
                 Math.min(corner1.getX(), corner2.getX()),
-                Math.min(corner1.getY(), corner2.getY()),
+                Math.max(Math.min(corner1.getY(), corner2.getY()), 0),
                 Math.min(corner1.getZ(), corner2.getZ())
         );
 
         BANK_WORLD_RAW.set(corner1.getWorld().getName());
-        BANK_CORNER_1_RAW.set(BlockUtils.location2String(BANK_HIGHEST_CORNER));
-        BANK_CORNER_2_RAW.set(BlockUtils.location2String(BANK_LOWEST_CORNER));
+        BANK_CORNER_1_RAW.set(LocationUtils.location2String(BANK_HIGHEST_CORNER));
+        BANK_CORNER_2_RAW.set(LocationUtils.location2String(BANK_LOWEST_CORNER));
     }
 
     public static Location getBankLowestCorner()

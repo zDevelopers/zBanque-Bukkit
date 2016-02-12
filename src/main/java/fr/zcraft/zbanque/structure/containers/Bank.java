@@ -57,6 +57,12 @@ public class Bank
     private final Set<Silo> silos = new CopyOnWriteArraySet<>();
 
 
+    /**
+     * @param codeName A code name for the bank (must be unique).
+     * @param displayName The bank's display name.
+     * @param corner1 A corner of the bank area.
+     * @param corner2 The opposite corner of the bank area.
+     */
     public Bank(final String codeName, final String displayName, final Location corner1, final Location corner2)
     {
         this.codeName = codeName;
@@ -77,31 +83,51 @@ public class Bank
         );
     }
 
+    /**
+     * @return The bank code name.
+     */
     public String getCodeName()
     {
         return codeName;
     }
 
+    /**
+     * @return The bank display name.
+     */
     public String getDisplayName()
     {
         return displayName;
     }
 
+    /**
+     * @return The corner of the bank area with the lowest coordinates.
+     */
     public Location getLowestCorner()
     {
         return lowestCorner;
     }
 
+    /**
+     * @return The corner of the bank area with the highest coordinates.
+     */
     public Location getHighestCorner()
     {
         return highestCorner;
     }
 
+    /**
+     * Retrieves the silos of this bank. A silo is a set of chests and hoppers linked together.
+     *
+     * @return The silos in this bank.
+     */
     public Set<Silo> getSilos()
     {
         return Collections.unmodifiableSet(silos);
     }
 
+    /**
+     * @return The content of the bank: a map associating a {@link BlockType} with the amount of items of this type in the bank.
+     */
     public Map<BlockType, Long> getContent()
     {
         Map<BlockType, Long> bankContent = new HashMap<>();
@@ -119,6 +145,12 @@ public class Bank
         return bankContent;
     }
 
+    /**
+     * @param reverseOrder If {@code true}, orders the content by reverse order (lowest last).
+     * @return The content of the bank, ordered by amount.
+     *
+     * @see #getContent()
+     */
     public Set<Map.Entry<BlockType, Long>> getOrderedContent(Boolean reverseOrder)
     {
         final int reverse = reverseOrder ? -1 : 1;
@@ -141,6 +173,9 @@ public class Bank
         return bankContentSorted;
     }
 
+    /**
+     * @return The total amount of items in all types in the bank.
+     */
     public Long getTotalItemsCount()
     {
         Long total = 0l;
@@ -151,11 +186,17 @@ public class Bank
         return total;
     }
 
+    /**
+     * @param silo The silo to add in the bank.
+     */
     public void addSilo(Silo silo)
     {
         silos.add(silo);
     }
 
+    /**
+     * @param silo The silo to remove from the bank.
+     */
     public void removeSilo(Silo silo)
     {
         silos.remove(silo);

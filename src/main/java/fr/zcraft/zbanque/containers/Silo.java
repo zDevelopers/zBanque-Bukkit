@@ -31,53 +31,107 @@
  */
 package fr.zcraft.zbanque.containers;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
- * A set of chests linked together.
+ * A set of containers linked together.
  *
  * <p>This is the main storage used here. A single chest is represented by a silo with a single
  * chest inside.</p>
  *
- * @see Chest The storage units.
+ * @see Container The storage units.
  */
 public class Silo
 {
     /**
      * The main output of the silo, where users take the resources.
      */
-    private Chest mainOutput;
+    private Container mainOutput;
 
     /**
-     * The chests contained in this silo.
+     * The containers contained in this silo.
      */
-    private final Set<Chest> chests = new CopyOnWriteArraySet<>();
+    private final Set<Container> containers = new CopyOnWriteArraySet<>();
 
 
-    public Chest getMainOutput()
+    public Container getMainOutput()
     {
         return mainOutput;
     }
 
-    public void setMainOutput(Chest mainOutput)
+    public void setMainOutput(Container mainOutput)
     {
         this.mainOutput = mainOutput;
     }
 
-    public Set<Chest> getChests()
+    public Set<Container> getContainers()
     {
-        return chests;
+        return Collections.unmodifiableSet(containers);
     }
 
-    public void addChest(Chest chest)
+    public void addContainer(Container container)
     {
-        chests.add(chest);
+        containers.add(container);
     }
 
-    public void removeChest(Chest chest)
+    public void removeContainer(Container container)
     {
-        chests.remove(chest);
+        containers.remove(container);
+    }
+
+
+    /**
+     * Aggregates the silo's content from all the containers.
+     *
+     * <p>The content is re-aggregated on each call, so avoid many calls at once.</p>
+     *
+     * @return A map (stack type → amount in the whole silot) representing the content of this silo.
+     */
+    public Map<BlockType, Integer> getContent()
+    {
+        Map<BlockType, Integer> siloContent = new HashMap<>();
+
+        for (Container container : containers)
+        {
+            for (Map.Entry<BlockType, Integer> chestContent : container.getContent().entrySet())
+            {
+                if (siloContent.containsKey(chestContent.getKey()))
+                    siloContent.put(chestContent.getKey(), siloContent.get(chestContent.getKey()) + chestContent.getValue());
+                else
+                    siloContent.put(chestContent.getKey(), chestContent.getValue());
+            }
+        }
+
+        return siloContent;
+    }
+
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Silo silo = (Silo) o;
+
+        return !(mainOutput != null ? !mainOutput.equals(silo.mainOutput) : silo.mainOutput != null) && containers.equals(silo.containers);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return 31 * (mainOutput != null ? mainOutput.hashCode() : 0) + containers.hashCode();
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Silo with " + getContainers().size() + " containers"
+                + (getMainOutput() != null ? " starting at " + getMainOutput() : "");
     }
 }

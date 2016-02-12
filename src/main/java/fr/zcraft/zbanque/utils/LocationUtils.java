@@ -34,28 +34,35 @@ package fr.zcraft.zbanque.utils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.Vector;
 
 
-public final class BlockUtils
+public final class LocationUtils
 {
-    private BlockUtils() {}
+    private LocationUtils() {}
 
     /**
      * Clones a location to a new one with block coordinates.
      *
      * @param location The cloned location.
+     *
      * @return The location with block coordinates only.
      */
     public static Location cloneLocationToBlock(Location location)
     {
+        if (location == null)
+            return null;
+
         return new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
     /**
-     * Converts a string location (format "x;y;z" or "x;y;z;pitch" or "x;y;z;pitch;yaw") to a location object.
+     * Converts a string location (format "x;y;z" or "x;y;z;pitch" or "x;y;z;pitch;yaw") to a
+     * location object.
      *
      * @param world The world.
-     * @param raw The raw string.
+     * @param raw   The raw string.
+     *
      * @return The location.
      * @throws IllegalArgumentException if the format is not valid.
      */
@@ -84,11 +91,22 @@ public final class BlockUtils
      * Converts a location to a string compatible with {@link #string2Location(World, String)}.
      *
      * @param location The location.
+     *
      * @return The string version.
      * @see #string2Location(World, String) for the string format.
      */
     public static String location2String(Location location)
     {
         return location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getPitch() + ";" + location.getYaw();
+    }
+
+    public static String userFriendlyLocation(Location location)
+    {
+        return location.getWorld().getName() + " @ " + location.getX() + ";" + location.getY() + ";" + location.getZ();
+    }
+
+    public static String userFriendlyVector(Vector vector)
+    {
+        return vector.getX() + ";" + vector.getY() + ";" + vector.getZ();
     }
 }

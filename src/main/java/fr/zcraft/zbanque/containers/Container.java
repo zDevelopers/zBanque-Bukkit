@@ -31,7 +31,7 @@
  */
 package fr.zcraft.zbanque.containers;
 
-import fr.zcraft.zbanque.utils.BlockUtils;
+import fr.zcraft.zbanque.utils.LocationUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -43,16 +43,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- * A chest in the bank, to be understood as a Minecraft chest.
+ * A chest or a hopper in the bank, to be understood as a Minecraft chest/hopper.
  *
- * @see Silo Chests are stored inside silos.
+ * @see Silo Containers are stored inside silos.
  */
-public class Chest
+public class Container
 {
     /**
-     * The chest type. Either {@link Material#CHEST} or {@link Material#TRAPPED_CHEST}.
+     * The chest type. Either {@link Material#CHEST}, {@link Material#TRAPPED_CHEST} or {@link Material#HOPPER}.
      */
-    private Material chestType;
+    private Material containerType = null;
 
     /**
      * The main chest location: the only one if this chest is a single one; the exposed one (if it
@@ -68,8 +68,45 @@ public class Chest
     /**
      * The content of this chest.
      */
-    private final Map<StackType, Integer> content = new ConcurrentHashMap<>();
+    private final Map<BlockType, Integer> content = new ConcurrentHashMap<>();
 
+
+    /**
+     * This constructor must be called from the Bukkit main thread.
+     *
+     * @param mainLocation      The main chest location: the only one if this chest/hopper is a single one;
+     *                          the exposed one (if it makes sense) else.
+     * @param secondaryLocation The secondary location. {@code null} if this chest is a single
+     *                          chest or a hopper.
+     * @param bypassChecks      If true, no coherence check will be performed and this constructor
+     *                          will become thread safe. <strong>You must be <em>ABSOLUTELY
+     *                          SURE</em> the data provided is valid if this is set to true, to
+     *                          avoid data corruption!</strong>
+     *
+     * @throws IllegalArgumentException if the main location is null, or if some of the given
+     *                                  locations don't point to a chest/hopper, or if this chest is not a
+     *                                  single chest.
+     */
+    public Container(Location mainLocation, Location secondaryLocation, boolean bypassChecks)
+    {
+        if (!bypassChecks)
+        {
+            Validate.notNull(mainLocation, "The main location cannot be null");
+            Validate.isTrue(isValidChestLocation(mainLocation), "The main location must be a chest/hopper");
+            Validate.isTrue(isValidChestLocation(secondaryLocation), "The secondary location must be null or a chest/hopper");
+            Validate.isTrue(secondaryLocation == null || mainLocation.getWorld().equals(secondaryLocation.getWorld()), "The secondary location must be in the same world as the first one");
+        }
+
+        this.mainLocation = LocationUtils.cloneLocationToBlock(mainLocation);
+        this.secondaryLocation = LocationUtils.cloneLocationToBlock(secondaryLocation);
+
+        if (!bypassChecks)
+        {
+            // The chest type will be updated later, it's not a problem.
+            checkChest();
+            Validate.notNull(containerType, "The chest is not a single chest!");
+        }
+    }
 
     /**
      * This constructor must be called from the Bukkit main thread.
@@ -83,18 +120,9 @@ public class Chest
      *                                  locations don't point to a chest, or if this chest is not a
      *                                  single chest.
      */
-    public Chest(Location mainLocation, Location secondaryLocation)
+    public Container(Location mainLocation, Location secondaryLocation)
     {
-        Validate.notNull(mainLocation, "The main location cannot be null");
-        Validate.isTrue(isValidChestLocation(mainLocation), "The main location must be a chest");
-        Validate.isTrue(isValidChestLocation(secondaryLocation), "The secondary location must be null or a chest");
-        Validate.isTrue(secondaryLocation == null || mainLocation.getWorld().equals(secondaryLocation.getWorld()), "The secondary location must be in the same world as the first one");
-
-        this.mainLocation = BlockUtils.cloneLocationToBlock(mainLocation);
-        this.secondaryLocation = BlockUtils.cloneLocationToBlock(secondaryLocation);
-
-        checkChest();
-        Validate.notNull(chestType, "The chest is not a single chest!");
+        this(mainLocation, secondaryLocation, false);
     }
 
     public Location getMainLocation()
@@ -107,9 +135,14 @@ public class Chest
         return secondaryLocation;
     }
 
-    public Map<StackType, Integer> getContent()
+    public Map<BlockType, Integer> getContent()
     {
         return content;
+    }
+
+    public boolean isChest()
+    {
+        return containerType != null && (containerType == Material.CHEST || containerType == Material.TRAPPED_CHEST);
     }
 
     /**
@@ -117,21 +150,21 @@ public class Chest
      *
      * <p>Must be called from the Bukkit main thread.</p>
      *
-     * @throws IllegalStateException if the chest is no longer a chest.
+     * @throws IllegalStateException if the chest is no longer a chest or hopper.
      */
     public void update()
     {
         try
         {
-            Validate.isTrue(isValidChestLocation(mainLocation));
-            Validate.isTrue(isValidChestLocation(secondaryLocation));
+            Validate.isTrue(isValidChestLocation(mainLocation), "Invalid main container location");
+            Validate.isTrue(isValidChestLocation(secondaryLocation), "Invalid secondary chest location");
 
             checkChest();
-            Validate.notNull(chestType);
+            Validate.notNull(containerType, "Invalid container type");
         }
         catch (IllegalArgumentException e)
         {
-            throw new IllegalStateException("This chest at " + (secondaryLocation == null ? mainLocation.toString() : mainLocation + " ; " + secondaryLocation) + " is no longer a valid chest");
+            throw new IllegalStateException("This chest at " + (secondaryLocation == null ? mainLocation.toString() : mainLocation + " ; " + secondaryLocation) + " is no longer a valid chest", e);
         }
 
         content.clear();
@@ -139,12 +172,15 @@ public class Chest
         final Inventory inventory = ((org.bukkit.block.Chest) mainLocation.getBlock().getState()).getInventory();
         for (ItemStack stack : inventory)
         {
-            StackType type = new StackType(stack);
+            if (stack != null && stack.getType() != Material.AIR)
+            {
+                BlockType type = new BlockType(stack);
 
-            if (!content.containsKey(type))
-                content.put(type, stack.getAmount());
-            else
-                content.put(type, content.get(type) + stack.getAmount());
+                if (!content.containsKey(type))
+                    content.put(type, stack.getAmount());
+                else
+                    content.put(type, content.get(type) + stack.getAmount());
+            }
         }
     }
 
@@ -165,11 +201,11 @@ public class Chest
             return true;
 
         final Material type = location.getBlock().getType();
-        return type == Material.CHEST || type == Material.TRAPPED_CHEST;
+        return type == Material.CHEST || type == Material.TRAPPED_CHEST || type == Material.HOPPER;
     }
 
     /**
-     * Updates the chest type (normal or trapped). Sets it to {@code null} if the chest is no longer
+     * Updates the container type (normal, trapped or hopper). Sets it to {@code null} if the chest is no longer
      * an unique chest.
      *
      * <p>Must be called from the Bukkit main thread.</p>
@@ -181,15 +217,15 @@ public class Chest
         Material secondaryType = secondaryLocation == null ? null : secondaryLocation.getBlock().getType();
 
         if (secondaryType == null || mainType.equals(secondaryType))
-            chestType = mainType;
+            containerType = mainType;
         else
-            chestType = null;
+            containerType = null;
 
         // Checks if the chest is still coherent
         if (secondaryLocation != null)
         {
             if (mainLocation.distanceSquared(secondaryLocation) != 1)
-                chestType = null;
+                containerType = null;
         }
     }
 
@@ -199,14 +235,21 @@ public class Chest
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Chest chest = (Chest) o;
+        Container container = (Container) o;
 
-        return mainLocation.equals(chest.mainLocation) && !(secondaryLocation != null ? !secondaryLocation.equals(chest.secondaryLocation) : chest.secondaryLocation != null);
+        return mainLocation.equals(container.mainLocation) && !(secondaryLocation != null ? !secondaryLocation.equals(container.secondaryLocation) : container.secondaryLocation != null);
     }
 
     @Override
     public int hashCode()
     {
         return 31 * mainLocation.hashCode() + (secondaryLocation != null ? secondaryLocation.hashCode() : 0);
+    }
+
+    @Override
+    public String toString()
+    {
+        return containerType + " @ " + LocationUtils.userFriendlyLocation(mainLocation)
+                + (secondaryLocation != null ? " & " + LocationUtils.userFriendlyLocation(secondaryLocation) : "");
     }
 }

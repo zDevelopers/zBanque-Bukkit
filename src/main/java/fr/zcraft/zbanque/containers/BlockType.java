@@ -39,12 +39,17 @@ import org.bukkit.inventory.ItemStack;
 /**
  * An item type.
  */
-public class StackType
+public class BlockType
 {
     private Material type;
-    private byte data;
+    private short data;
 
-    public StackType(Material type, byte data)
+    /**
+     * @param type The block type. Cannot be {@code null}.
+     * @param data The block data value. If -1, any data will match (wildcard data value) in {@link
+     *             #equals(Object) the equals method}.
+     */
+    public BlockType(Material type, short data)
     {
         Validate.notNull(type, "The block type cannot be null");
 
@@ -52,9 +57,20 @@ public class StackType
         this.data = data;
     }
 
-    public StackType(ItemStack stack)
+    /**
+     * Data-wildcard constructor. Any data value will match in {@link #equals(Object) the equals
+     * method}.
+     *
+     * @param type The block type. Cannot be {@code null}.
+     */
+    public BlockType(Material type)
     {
-        this(stack.getType(), stack.getData().getData());
+        this(type, (short) -1);
+    }
+
+    public BlockType(ItemStack stack)
+    {
+        this(stack.getType(), stack.getDurability());
     }
 
     public Material getType()
@@ -67,16 +83,26 @@ public class StackType
         this.type = type;
     }
 
-    public byte getData()
+    public short getData()
     {
         return data;
     }
 
-    public void setData(byte data)
+    /**
+     * @param data The block data value. If -1, any data will match (wildcard data value) in {@link
+     *             #equals(Object) the equals method}.
+     */
+    public void setData(short data)
     {
         this.data = data;
     }
 
+
+    @Override
+    public String toString()
+    {
+        return type.name() + ":" + data;
+    }
 
     @Override
     public boolean equals(Object o)
@@ -84,9 +110,9 @@ public class StackType
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        StackType stackType = (StackType) o;
+        BlockType blockType = (BlockType) o;
 
-        return data == stackType.data && type == stackType.type;
+        return (data == -1 || blockType.data == -1 || data == blockType.data) && type == blockType.type;
     }
 
     @Override

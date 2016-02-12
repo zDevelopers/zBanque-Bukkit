@@ -32,35 +32,37 @@
 package fr.zcraft.zbanque.commands;
 
 import fr.zcraft.zbanque.Permissions;
-import fr.zcraft.zbanque.containers.BlockType;
-import fr.zcraft.zbanque.containers.Silo;
-import fr.zcraft.zbanque.structure.BankStructure;
+import fr.zcraft.zbanque.commands.shortcuts.WithBankNameCommand;
+import fr.zcraft.zbanque.structure.containers.Bank;
+import fr.zcraft.zbanque.structure.containers.BlockType;
+import fr.zcraft.zbanque.structure.containers.Silo;
 import fr.zcraft.zbanque.utils.LocationUtils;
-import fr.zcraft.zlib.components.commands.Command;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
 import fr.zcraft.zlib.components.i18n.I;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 
-@CommandInfo (name = "structure")
-public class StructureViewCommand extends Command
+@CommandInfo (name = "structure", usageParameters = "<bank>")
+public class StructureViewCommand extends WithBankNameCommand
 {
     @Override
     protected void run() throws CommandException
     {
-        Set<Silo> structure = BankStructure.get().getSilos();
+        final Bank bank = getBankFromArgs(0);
+        final Set<Silo> structure = bank.getSilos();
 
         if (structure.isEmpty())
         {
-            info(I.t("The bank is empty."));
+            info(I.t("This bank is empty."));
             return;
         }
 
-        final String header = I.tn("{gold}{bold}{0} silo in the bank", "{gold}{bold}{0} silos in the bank", structure.size());
+        final String header = I.tn("{gold}{bold}{0} silo in the {1} bank", "{gold}{bold}{0} silos in the {1} bank", structure.size(), structure.size(), bank.getDisplayName());
         info(header);
 
         for (Silo silo : structure)
@@ -77,7 +79,17 @@ public class StructureViewCommand extends Command
                 info(I.tn("{darkgray}- {gray}{0} {darkgray}»{white} {1} {gray}item", "{darkgray}- {gray}{0} {darkgray}»{white} {1} {gray}items", stack.getValue(), stack.getKey(), stack.getValue()));
             }
         }
+
         info(header);
+    }
+
+    @Override
+    protected List<String> complete() throws CommandException
+    {
+        if (args.length == 1)
+            return autocompleteForBank(0);
+
+        else return null;
     }
 
     @Override

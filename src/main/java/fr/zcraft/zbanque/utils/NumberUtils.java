@@ -29,42 +29,24 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque.commands;
+package fr.zcraft.zbanque.utils;
 
-import fr.zcraft.zbanque.Permissions;
-import fr.zcraft.zbanque.commands.shortcuts.WithBankNameCommand;
-import fr.zcraft.zlib.components.commands.CommandException;
-import fr.zcraft.zlib.components.commands.CommandInfo;
-import org.bukkit.command.CommandSender;
-
-import java.util.Collections;
-import java.util.List;
-
-
-@CommandInfo (name = "update-structure", usageParameters = "<bank> [verbose]")
-public class StructureUpdateCommand extends WithBankNameCommand
+public final class NumberUtils
 {
-    @Override
-    protected void run() throws CommandException
+    private NumberUtils() {}
+
+    /**
+     * Converts a long to an integer, for comparison purposes.
+     *
+     * <p>WARNING: this is not an accurate conversion if the long is out of the integers range.</p>
+     *
+     * @param source The long.
+     * @return The integer.
+     */
+    public static Integer long2int(Long source)
     {
-        getBankFromArgs(0).updateStructure(sender, args.length > 1 && args[1].equalsIgnoreCase("verbose"));
-    }
-
-    @Override
-    protected List<String> complete() throws CommandException
-    {
-        if (args.length == 1)
-            return autocompleteForBank(0);
-
-        else if (args.length == 2)
-            return getMatchingSubset(Collections.singletonList("verbose"), args[1]);
-
-        else return null;
-    }
-
-    @Override
-    public boolean canExecute(CommandSender sender)
-    {
-        return Permissions.UPDATE_STRUCTURE.isGrantedTo(sender);
+        return source > Integer.MAX_VALUE ? Integer.MAX_VALUE :
+               source < Integer.MIN_VALUE ? Integer.MIN_VALUE :
+               Integer.valueOf(source.toString());
     }
 }

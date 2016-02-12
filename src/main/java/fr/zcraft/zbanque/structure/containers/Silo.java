@@ -29,7 +29,7 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque.containers;
+package fr.zcraft.zbanque.structure.containers;
 
 import java.util.Collections;
 import java.util.HashMap;

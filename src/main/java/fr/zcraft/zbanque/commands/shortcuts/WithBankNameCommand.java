@@ -29,62 +29,44 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque.commands;
+package fr.zcraft.zbanque.commands.shortcuts;
 
-import fr.zcraft.zbanque.Permissions;
-import fr.zcraft.zbanque.commands.shortcuts.WithBankNameCommand;
+import fr.zcraft.zbanque.structure.BanksManager;
 import fr.zcraft.zbanque.structure.containers.Bank;
-import fr.zcraft.zbanque.structure.containers.BlockType;
-import fr.zcraft.zbanque.utils.NumberUtils;
+import fr.zcraft.zlib.components.commands.Command;
 import fr.zcraft.zlib.components.commands.CommandException;
-import fr.zcraft.zlib.components.commands.CommandInfo;
 import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.runners.RunAsyncTask;
-import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 
-@CommandInfo (name = "content", usageParameters = "<bank> [reverse]")
-public class ContentViewCommand extends WithBankNameCommand
+public abstract class WithBankNameCommand extends Command
 {
-    @Override
-    protected void run() throws CommandException
+    protected Bank getBankFromArgs(int bankArgIndex) throws CommandException
     {
-        final CommandSender sender = this.sender;
-        final Bank bank = getBankFromArgs(0);
-        final boolean reverse = args.length > 1 && args[1].equalsIgnoreCase("reverse");
+        if (args.length <= bankArgIndex)
+            throwInvalidArgument(I.t("The bank name is required."));
 
-        RunAsyncTask.nextTick(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                for (Map.Entry<BlockType, Long> item : bank.getOrderedContent(reverse))
-                {
-                    sender.sendMessage(I.tn("{white}{0} {gray}item of {1}", "{white}{0} {gray}items of {1}", NumberUtils.long2int(item.getValue()), item.getValue(), item.getKey()));
-                }
-            }
-        });
+        final Bank bank = BanksManager.get().getBank(args[bankArgIndex]);
+
+        if (bank == null)
+            throwInvalidArgument(I.t("There is no bank called {0} registered", args[0]));
+
+        return bank;
     }
 
-    @Override
-    protected List<String> complete() throws CommandException
+    protected List<String> autocompleteForBank(int bankArgIndex)
     {
-        if (args.length == 1)
-            return autocompleteForBank(0);
+        if (args.length <= bankArgIndex)
+            return Collections.emptyList();
 
-        else if (args.length == 2)
-            return getMatchingSubset(Collections.singletonList("reverse"), args[1]);
+        List<String> bankCodeNames = new ArrayList<>();
+        for (Bank bank : BanksManager.get().getBanks())
+            bankCodeNames.add(bank.getCodeName());
+        Collections.sort(bankCodeNames);
 
-        else return null;
-    }
-
-    @Override
-    public boolean canExecute(CommandSender sender)
-    {
-        return Permissions.SEE_CONTENT.isGrantedTo(sender);
+        return getMatchingSubset(bankCodeNames, args[bankArgIndex]);
     }
 }

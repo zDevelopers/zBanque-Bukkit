@@ -1,5 +1,34 @@
-bank:
-    # The bank's location.
-    world: "world"
-    firstCorner: "-10;0;-10"
-    otherCorner: "10;60;10"
+# This system supports multiple banks.
+# To create a new bank, simply copy-paste the `main` entry under it at the
+# same level (with four spaces before), and updates the key (`main`, as this
+# key must be unique) and the content.
+#
+# Example:
+#
+# banks:
+#     main:
+#         # The bank display name
+#         name: "Main bank"
+#
+#         # The bank's location.
+#         world: "world"
+#         firstCorner: "-10;0;-10"
+#         otherCorner: "10;60;10"
+#
+#     other-bank:
+#         # The bank display name
+#         name: "Other bank"
+#
+#         # The bank's location.
+#         world: "world"
+#         firstCorner: "-100;0;-100"
+#         otherCorner: "-60;120;-30"
+banks:
+    main:
+        # The bank display name
+        name: "Main bank"
+
+        # The bank's location.
+        world: "world"
+        firstCorner: "-10;0;-10"
+        otherCorner: "10;60;10"

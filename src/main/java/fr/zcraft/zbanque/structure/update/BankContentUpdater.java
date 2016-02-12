@@ -31,11 +31,10 @@
  */
 package fr.zcraft.zbanque.structure.update;
 
-import fr.zcraft.zbanque.containers.Container;
-import fr.zcraft.zbanque.containers.Silo;
-import fr.zcraft.zbanque.structure.BankStructure;
+import fr.zcraft.zbanque.structure.containers.Bank;
+import fr.zcraft.zbanque.structure.containers.Container;
+import fr.zcraft.zbanque.structure.containers.Silo;
 import fr.zcraft.zlib.tools.Callback;
-import fr.zcraft.zlib.tools.PluginLogger;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayDeque;
@@ -51,21 +50,25 @@ public class BankContentUpdater extends BukkitRunnable
 
     private final Callback<Set<Container>> callback;
 
-
-    public BankContentUpdater()
+    /**
+     * Must be called from a timer task every tick from the main thread. Auto-cancels.
+     *
+     * @param bank The bank to update.
+     */
+    public BankContentUpdater(Bank bank)
     {
-        this(null);
+        this(bank, null);
     }
 
     /**
      * Must be called from a timer task every tick from the main thread. Auto-cancels.
      *
+     * @param bank The bank to update.
      * @param callback A callback, called with the invalid containers found while updating the
-     *                 content.
      */
-    public BankContentUpdater(Callback<Set<Container>> callback)
+    public BankContentUpdater(Bank bank, Callback<Set<Container>> callback)
     {
-        this.silosQueue.addAll(BankStructure.get().getSilos());
+        this.silosQueue.addAll(bank.getSilos());
         this.callback = callback;
     }
 
@@ -73,7 +76,6 @@ public class BankContentUpdater extends BukkitRunnable
     @Override
     public void run()
     {
-        PluginLogger.info("Container update (main thread)");
         Silo silo = silosQueue.poll();
 
         if (silo != null)

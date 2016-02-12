@@ -32,13 +32,13 @@
 package fr.zcraft.zbanque;
 
 import fr.zcraft.zbanque.commands.ContentViewCommand;
+import fr.zcraft.zbanque.commands.ListBanksCommand;
 import fr.zcraft.zbanque.commands.StructureUpdateCommand;
 import fr.zcraft.zbanque.commands.StructureViewCommand;
+import fr.zcraft.zbanque.structure.BanksManager;
 import fr.zcraft.zlib.components.commands.Commands;
-import fr.zcraft.zlib.components.configuration.Configuration;
 import fr.zcraft.zlib.components.i18n.I18n;
 import fr.zcraft.zlib.core.ZPlugin;
-import fr.zcraft.zlib.tools.PluginLogger;
 
 import java.util.Locale;
 
@@ -59,24 +59,16 @@ public class ZBanque extends ZPlugin
         I18n.setFallbackLocale(Locale.US);
 
         saveDefaultConfig();
-        Configuration.init(Config.class);
-        Config.initialize();
 
         Commands.register(
                 "zbanque",
+                ListBanksCommand.class,
                 ContentViewCommand.class,
                 StructureViewCommand.class,
                 StructureUpdateCommand.class
         );
-    }
 
-    /**
-     * Aborts the plugin, if a fatal error occurs while loading.
-     */
-    void abort()
-    {
-        PluginLogger.error("A fatal error occurred. Aborting.");
-        setEnabled(false);
+        BanksManager.get().registerBanksInConfig(getConfig().getConfigurationSection("banks"));
     }
 
     public static ZBanque get()

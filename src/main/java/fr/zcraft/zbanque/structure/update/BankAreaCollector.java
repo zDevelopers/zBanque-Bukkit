@@ -31,12 +31,11 @@
  */
 package fr.zcraft.zbanque.structure.update;
 
-import fr.zcraft.zbanque.Config;
-import fr.zcraft.zbanque.containers.Area;
-import fr.zcraft.zbanque.containers.BlockType;
+import fr.zcraft.zbanque.structure.containers.Area;
+import fr.zcraft.zbanque.structure.containers.Bank;
+import fr.zcraft.zbanque.structure.containers.BlockType;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.runners.RunAsyncTask;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -48,26 +47,24 @@ public class BankAreaCollector extends BukkitRunnable
     private final CommandSender requestedBy;
     private final boolean verbose;
 
-    private final Location high;
-    private final Location low;
+    private final Bank bank;
 
     private int layer;
     private int loadedBlocks = 0;
 
     private final Area area;
 
-    public BankAreaCollector(CommandSender requestedBy, boolean verbose)
+    public BankAreaCollector(Bank bank, CommandSender requestedBy, boolean verbose)
     {
         this.requestedBy = requestedBy;
         this.verbose = verbose;
 
         requestedBy.sendMessage(I.t("{gray}Loading bank area..."));
 
-        high = Config.getBankHighestCorner();
-        low = Config.getBankLowestCorner();
+        this.bank = bank;
 
-        layer = low.getBlockX();
-        area = new Area(low, high);
+        this.layer = bank.getLowestCorner().getBlockX();
+        this.area = new Area(bank);
     }
 
     @Override
@@ -76,12 +73,12 @@ public class BankAreaCollector extends BukkitRunnable
         if (verbose)
             requestedBy.sendMessage(I.t("{gray}{italic}Loading layer at x = {0}...", layer));
 
-        final int yMin = low.getBlockY();
-        final int zMin = low.getBlockZ();
-        final int yMax = high.getBlockY();
-        final int zMax = high.getBlockZ();
+        final int yMin = bank.getLowestCorner().getBlockY();
+        final int zMin = bank.getLowestCorner().getBlockZ();
+        final int yMax = bank.getHighestCorner().getBlockY();
+        final int zMax = bank.getHighestCorner().getBlockZ();
 
-        final World world = low.getWorld();
+        final World world = bank.getLowestCorner().getWorld();
 
         int loadedBlocks = 0;
 
@@ -97,12 +94,12 @@ public class BankAreaCollector extends BukkitRunnable
 
         this.loadedBlocks += loadedBlocks;
 
-        if (layer == high.getBlockX())
+        if (layer == bank.getHighestCorner().getBlockX())
         {
             if (verbose)
                 requestedBy.sendMessage(I.tn("{gray}Bank area loaded ({0} block).", "{gray}Bank area loaded ({0} blocks).", this.loadedBlocks));
 
-            RunAsyncTask.later(new BankAnalyzer(requestedBy, verbose, area), 20l);
+            RunAsyncTask.later(new BankAnalyzer(bank, area, requestedBy, verbose), 20l);
             cancel();
         }
         else

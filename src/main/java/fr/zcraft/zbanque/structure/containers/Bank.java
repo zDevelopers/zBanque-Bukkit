@@ -29,13 +29,12 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque.structure;
+package fr.zcraft.zbanque.structure.containers;
 
-import fr.zcraft.zbanque.containers.BlockType;
-import fr.zcraft.zbanque.containers.Silo;
 import fr.zcraft.zbanque.structure.update.BankAreaCollector;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.runners.RunTask;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -47,34 +46,70 @@ import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
-public class BankStructure
+public class Bank
 {
-    private static BankStructure instance = new BankStructure();
+    private final String codeName;
+    private final String displayName;
 
-    private Set<Silo> silos = new CopyOnWriteArraySet<>();
+    private final Location lowestCorner;
+    private final Location highestCorner;
+
+    private final Set<Silo> silos = new CopyOnWriteArraySet<>();
 
 
-    public static BankStructure get()
+    public Bank(final String codeName, final String displayName, final Location corner1, final Location corner2)
     {
-        return instance;
+        this.codeName = codeName;
+        this.displayName = displayName;
+
+        this.highestCorner = new Location(
+                corner1.getWorld(),
+                Math.max(corner1.getX(), corner2.getX()),
+                Math.min(Math.max(corner1.getY(), corner2.getY()), corner1.getWorld().getMaxHeight()),
+                Math.max(corner1.getZ(), corner2.getZ())
+        );
+
+        this.lowestCorner = new Location(
+                corner1.getWorld(),
+                Math.min(corner1.getX(), corner2.getX()),
+                Math.max(Math.min(corner1.getY(), corner2.getY()), 0),
+                Math.min(corner1.getZ(), corner2.getZ())
+        );
     }
 
-    private BankStructure() {}
+    public String getCodeName()
+    {
+        return codeName;
+    }
 
+    public String getDisplayName()
+    {
+        return displayName;
+    }
+
+    public Location getLowestCorner()
+    {
+        return lowestCorner;
+    }
+
+    public Location getHighestCorner()
+    {
+        return highestCorner;
+    }
 
     public Set<Silo> getSilos()
     {
         return Collections.unmodifiableSet(silos);
     }
 
-    public Map<BlockType, Integer> getContent()
+    public Map<BlockType, Long> getContent()
     {
-        Map<BlockType, Integer> bankContent = new HashMap<>();
-        for (Silo silo : BankStructure.get().getSilos())
+        Map<BlockType, Long> bankContent = new HashMap<>();
+        for (Silo silo : getSilos())
         {
             for (Map.Entry<BlockType, Integer> content : silo.getContent().entrySet())
             {
-                Integer value = bankContent.containsKey(content.getKey()) ? bankContent.get(content.getKey()) : 0;
+                Long value = bankContent.containsKey(content.getKey()) ? bankContent.get(content.getKey()) : 0l;
                 value += content.getValue();
 
                 bankContent.put(content.getKey(), value);
@@ -84,14 +119,14 @@ public class BankStructure
         return bankContent;
     }
 
-    public Set<Map.Entry<BlockType, Integer>> getOrderedContent(Boolean reverseOrder)
+    public Set<Map.Entry<BlockType, Long>> getOrderedContent(Boolean reverseOrder)
     {
         final int reverse = reverseOrder ? -1 : 1;
 
-        Set<Map.Entry<BlockType, Integer>> bankContentSorted = new TreeSet<>(new Comparator<Map.Entry<BlockType, Integer>>()
+        Set<Map.Entry<BlockType, Long>> bankContentSorted = new TreeSet<>(new Comparator<Map.Entry<BlockType, Long>>()
         {
             @Override
-            public int compare(Map.Entry<BlockType, Integer> one, Map.Entry<BlockType, Integer> other)
+            public int compare(Map.Entry<BlockType, Long> one, Map.Entry<BlockType, Long> other)
             {
                 if (one.getValue() < other.getValue())
                     return -1 * reverse;
@@ -104,6 +139,16 @@ public class BankStructure
 
         bankContentSorted.addAll(getContent().entrySet());
         return bankContentSorted;
+    }
+
+    public Long getTotalItemsCount()
+    {
+        Long total = 0l;
+
+        for (Long amount : getContent().values())
+            total += amount;
+
+        return total;
     }
 
     public void addSilo(Silo silo)
@@ -126,7 +171,7 @@ public class BankStructure
      */
     public void updateStructure(CommandSender requestedBy, boolean verbose)
     {
-        requestedBy.sendMessage(I.t("{cst}{bold}Starting bank structure update."));
-        RunTask.timer(new BankAreaCollector(requestedBy, verbose), 1l, 1l);
+        requestedBy.sendMessage(I.t("{cst}{bold}Starting bank structure update for {0}.", getDisplayName()));
+        RunTask.timer(new BankAreaCollector(this, requestedBy, verbose), 1l, 1l);
     }
 }

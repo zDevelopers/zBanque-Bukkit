@@ -31,60 +31,31 @@
  */
 package fr.zcraft.zbanque.commands;
 
-import fr.zcraft.zbanque.Permissions;
-import fr.zcraft.zbanque.commands.shortcuts.WithBankNameCommand;
+import fr.zcraft.zbanque.structure.BanksManager;
 import fr.zcraft.zbanque.structure.containers.Bank;
-import fr.zcraft.zbanque.structure.containers.BlockType;
 import fr.zcraft.zbanque.utils.NumberUtils;
+import fr.zcraft.zlib.components.commands.Command;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
 import fr.zcraft.zlib.components.i18n.I;
-import fr.zcraft.zlib.tools.runners.RunAsyncTask;
-import org.bukkit.command.CommandSender;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 
-@CommandInfo (name = "content", usageParameters = "<bank> [reverse]")
-public class ContentViewCommand extends WithBankNameCommand
+@CommandInfo (name = "list")
+public class ListBanksCommand extends Command
 {
     @Override
     protected void run() throws CommandException
     {
-        final CommandSender sender = this.sender;
-        final Bank bank = getBankFromArgs(0);
-        final boolean reverse = args.length > 1 && args[1].equalsIgnoreCase("reverse");
+        Set<Bank> banks = BanksManager.get().getBanks();
 
-        RunAsyncTask.nextTick(new Runnable()
+        sender.sendMessage(I.tn("{white}{bold}{0} {blue}{bold}bank registered", "{white}{bold}{0} {blue}{bold}banks registered", banks.size()));
+
+        for (Bank bank : banks)
         {
-            @Override
-            public void run()
-            {
-                for (Map.Entry<BlockType, Long> item : bank.getOrderedContent(reverse))
-                {
-                    sender.sendMessage(I.tn("{white}{0} {gray}item of {1}", "{white}{0} {gray}items of {1}", NumberUtils.long2int(item.getValue()), item.getValue(), item.getKey()));
-                }
-            }
-        });
-    }
-
-    @Override
-    protected List<String> complete() throws CommandException
-    {
-        if (args.length == 1)
-            return autocompleteForBank(0);
-
-        else if (args.length == 2)
-            return getMatchingSubset(Collections.singletonList("reverse"), args[1]);
-
-        else return null;
-    }
-
-    @Override
-    public boolean canExecute(CommandSender sender)
-    {
-        return Permissions.SEE_CONTENT.isGrantedTo(sender);
+            final Long total = bank.getTotalItemsCount();
+            sender.sendMessage(I.tn("{darkgray}- {white}{0} {gray}(code name {white}{1}{gray} ; {white}{2}{gray} item stored)", "{darkgray}- {white}{0} {gray}(code name {white}{1}{gray} ; {white}{2}{gray} items stored)", NumberUtils.long2int(total), bank.getDisplayName(), bank.getCodeName(), total));
+        }
     }
 }

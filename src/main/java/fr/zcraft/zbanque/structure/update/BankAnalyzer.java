@@ -31,11 +31,11 @@
  */
 package fr.zcraft.zbanque.structure.update;
 
-import fr.zcraft.zbanque.containers.Area;
-import fr.zcraft.zbanque.containers.BlockType;
-import fr.zcraft.zbanque.containers.Container;
-import fr.zcraft.zbanque.containers.Silo;
-import fr.zcraft.zbanque.structure.BankStructure;
+import fr.zcraft.zbanque.structure.containers.Area;
+import fr.zcraft.zbanque.structure.containers.BlockType;
+import fr.zcraft.zbanque.structure.containers.Container;
+import fr.zcraft.zbanque.structure.containers.Silo;
+import fr.zcraft.zbanque.structure.containers.Bank;
 import fr.zcraft.zbanque.utils.LocationUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.Callback;
@@ -67,6 +67,7 @@ public class BankAnalyzer implements Runnable
     private final CommandSender requestedBy;
     private final boolean verbose;
 
+    private final Bank bank;
     private final Area area;
     private final World world;
 
@@ -74,11 +75,12 @@ public class BankAnalyzer implements Runnable
     private final Set<Vector> analyzedHoppers = new HashSet<>();
 
 
-    public BankAnalyzer(CommandSender requestedBy, boolean verbose, Area area)
+    public BankAnalyzer(Bank bank, Area area, CommandSender requestedBy, boolean verbose)
     {
         this.requestedBy = requestedBy;
         this.verbose = verbose;
 
+        this.bank = bank;
         this.area = area;
         this.world = area.getLowestCorner().getWorld();
 
@@ -140,13 +142,13 @@ public class BankAnalyzer implements Runnable
                         silo.addContainer(retrievedContainer);
                     }
 
-                    BankStructure.get().addSilo(silo);
+                    bank.addSilo(silo);
                 }
             }
         }
 
         requestedBy.sendMessage(I.t("{cst}Updating containers content..."));
-        RunTask.timer(new BankContentUpdater(new Callback<Set<Container>>()
+        RunTask.timer(new BankContentUpdater(bank, new Callback<Set<Container>>()
         {
             @Override
             public void call(final Set<Container> invalidContainers)
@@ -175,7 +177,7 @@ public class BankAnalyzer implements Runnable
     private void extractMainChests()
     {
         requestedBy.sendMessage(I.t("{cst}Extracting silos main chests..."));
-        for (Silo silo : BankStructure.get().getSilos())
+        for (Silo silo : bank.getSilos())
         {
             for (Container container : silo.getContainers())
             {
@@ -416,7 +418,7 @@ public class BankAnalyzer implements Runnable
 
     private Silo getSilo(int x, int y, int z)
     {
-        for (Silo silo : BankStructure.get().getSilos())
+        for (Silo silo : bank.getSilos())
         {
             for (Container container : silo.getContainers())
             {

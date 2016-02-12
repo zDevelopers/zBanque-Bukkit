@@ -29,7 +29,7 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque.containers;
+package fr.zcraft.zbanque.structure.containers;
 
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -73,6 +73,16 @@ public class Area
 
         this.lowestCorner = lowestCorner;
         this.highestCorner = highestCorner;
+    }
+
+    /**
+     * Constructs an area from a bank—the constructed area is retrieved from the bank one.
+     *
+     * @param bank The bank.
+     */
+    public Area(Bank bank)
+    {
+        this(bank.getLowestCorner(), bank.getHighestCorner());
     }
 
     /**

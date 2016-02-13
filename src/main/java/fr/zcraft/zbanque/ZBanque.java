@@ -36,6 +36,7 @@ import fr.zcraft.zbanque.commands.ListBanksCommand;
 import fr.zcraft.zbanque.commands.StructureUpdateCommand;
 import fr.zcraft.zbanque.commands.StructureViewCommand;
 import fr.zcraft.zbanque.structure.BanksManager;
+import fr.zcraft.zbanque.utils.AsyncAccess;
 import fr.zcraft.zlib.components.commands.Commands;
 import fr.zcraft.zlib.components.i18n.I18n;
 import fr.zcraft.zlib.core.ZPlugin;
@@ -68,7 +69,16 @@ public class ZBanque extends ZPlugin
                 StructureUpdateCommand.class
         );
 
+        AsyncAccess.update();
+
         BanksManager.get().registerBanksInConfig(getConfig().getConfigurationSection("banks"));
+    }
+
+    @Override
+    public void onDisable()
+    {
+        BanksManager.get().saveAll();
+        super.onDisable();
     }
 
     public static ZBanque get()

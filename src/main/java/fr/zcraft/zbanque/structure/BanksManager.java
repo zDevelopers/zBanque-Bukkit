@@ -35,6 +35,7 @@ import fr.zcraft.zbanque.structure.containers.Bank;
 import fr.zcraft.zbanque.utils.LocationUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.PluginLogger;
+import fr.zcraft.zlib.tools.runners.RunAsyncTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -162,5 +163,31 @@ public class BanksManager
                 registerBank(new Bank(bankCodeName, name, corner1, corner2));
             }
         }
+
+        RunAsyncTask.nextTick(new Runnable() {
+            @Override
+            public void run()
+            {
+                loadAll();
+            }
+        });
+    }
+
+    /**
+     * Loads all the registered banks content. This should be called asynchronously.
+     */
+    public void loadAll()
+    {
+        for (Bank bank : banks.values())
+            bank.loadFromFile();
+    }
+
+    /**
+     * Saves all the registered banks content. This should be called asynchronously.
+     */
+    public void saveAll()
+    {
+        for (Bank bank : banks.values())
+            bank.saveToFile();
     }
 }

@@ -184,6 +184,19 @@ public class Container
         }
     }
 
+    /**
+     * Updates the amount of a specific block type.
+     *
+     * <p>For import from file only, this method should not be used out of this specific case.</p>
+     *
+     * @param type The type.
+     * @param amount The amount of items of this type in this container.
+     */
+    public void updateBlockType(BlockType type, Integer amount)
+    {
+        content.put(type, amount);
+    }
+
 
     /**
      * Checks if the given location is a valid chest.

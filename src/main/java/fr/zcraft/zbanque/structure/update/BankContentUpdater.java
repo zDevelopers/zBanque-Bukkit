@@ -35,6 +35,7 @@ import fr.zcraft.zbanque.structure.containers.Bank;
 import fr.zcraft.zbanque.structure.containers.Container;
 import fr.zcraft.zbanque.structure.containers.Silo;
 import fr.zcraft.zlib.tools.Callback;
+import fr.zcraft.zlib.tools.runners.RunAsyncTask;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayDeque;
@@ -45,6 +46,7 @@ import java.util.Set;
 
 public class BankContentUpdater extends BukkitRunnable
 {
+    private final Bank bank;
     private final Deque<Silo> silosQueue = new ArrayDeque<>();
     private final Set<Container> invalidContainers = new HashSet<>();
 
@@ -68,6 +70,7 @@ public class BankContentUpdater extends BukkitRunnable
      */
     public BankContentUpdater(Bank bank, Callback<Set<Container>> callback)
     {
+        this.bank = bank;
         this.silosQueue.addAll(bank.getSilos());
         this.callback = callback;
     }
@@ -93,6 +96,14 @@ public class BankContentUpdater extends BukkitRunnable
         else
         {
             cancel();
+
+            RunAsyncTask.nextTick(new Runnable() {
+                @Override
+                public void run()
+                {
+                    bank.saveToFile();
+                }
+            });
 
             if (callback != null)
                 callback.call(invalidContainers);

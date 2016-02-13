@@ -29,33 +29,46 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque.commands;
+package fr.zcraft.zbanque.utils;
 
-import fr.zcraft.zbanque.structure.BanksManager;
-import fr.zcraft.zbanque.structure.containers.Bank;
-import fr.zcraft.zbanque.utils.NumberUtils;
-import fr.zcraft.zlib.components.commands.Command;
-import fr.zcraft.zlib.components.commands.CommandException;
-import fr.zcraft.zlib.components.commands.CommandInfo;
-import fr.zcraft.zlib.components.i18n.I;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
-@CommandInfo (name = "list")
-public class ListBanksCommand extends Command
+public final class AsyncAccess
 {
-    @Override
-    protected void run() throws CommandException
+    private static Map<String, World> worlds = new ConcurrentHashMap<>();
+
+    private AsyncAccess() {}
+
+    public static void update()
     {
-        Set<Bank> banks = BanksManager.get().getBanks();
+        initWorlds();
+    }
 
-        sender.sendMessage(I.tn("{white}{bold}{0} {blue}{bold}bank registered", "{white}{bold}{0} {blue}{bold}banks registered", banks.size()));
+    private static void initWorlds()
+    {
+        worlds.clear();
 
-        for (Bank bank : banks)
-        {
-            final Long total = bank.getTotalItemsCount();
-            sender.sendMessage(I.tn("{darkgray}- {white}{0} {gray}(code name {white}{1}{gray} ; {white}{2}{gray} item stored in {white}{3}{gray} silo)", "{darkgray}- {white}{0} {gray}(code name {white}{1}{gray} ; {white}{2}{gray} items stored in {white}{3}{gray} silos)", NumberUtils.long2int(total), bank.getDisplayName(), bank.getCodeName(), total, bank.getSilos().size()));
-        }
+        for (World world : Bukkit.getWorlds())
+            worlds.put(world.getName(), world);
+    }
+
+
+    public static World getWorld(String world)
+    {
+        return worlds.get(world);
+    }
+
+    public static List<World> getWorlds()
+    {
+        List<World> worldsList = new ArrayList<>();
+        worldsList.addAll(worlds.values());
+        return worldsList;
     }
 }

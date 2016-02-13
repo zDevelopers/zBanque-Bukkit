@@ -59,7 +59,8 @@ public class BankAreaCollector extends BukkitRunnable
         this.requestedBy = requestedBy;
         this.verbose = verbose;
 
-        requestedBy.sendMessage(I.t("{gray}Loading bank area..."));
+        int seconds = (Math.abs(bank.getHighestCorner().getBlockX() - bank.getLowestCorner().getBlockX()) / 20);
+        requestedBy.sendMessage(I.tn("{cst}Loading bank area... (approximately {0} second to go)", "{cst}Loading bank area... (approximately {0} seconds to go)", seconds));
 
         this.bank = bank;
 

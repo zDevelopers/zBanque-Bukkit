@@ -147,7 +147,9 @@ public class BankAnalyzer implements Runnable
             }
         }
 
-        requestedBy.sendMessage(I.t("{cst}Updating containers content..."));
+        final int seconds = bank.getSilos().size() / 20;
+        requestedBy.sendMessage(I.tn("{cst}Updating containers content... (approximately {0} second to go)", "{cst}Updating containers content... (approximately {0} seconds to go)", seconds));
+
         RunTask.timer(new BankContentUpdater(bank, new Callback<Set<Container>>()
         {
             @Override
@@ -196,6 +198,8 @@ public class BankAnalyzer implements Runnable
                 }
             }
         }
+
+        bank.saveToFile();
 
         requestedBy.sendMessage(I.t("{cst}Done. Bank structure updated successfully."));
     }

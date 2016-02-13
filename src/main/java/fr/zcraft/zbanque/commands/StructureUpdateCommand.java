@@ -32,7 +32,7 @@
 package fr.zcraft.zbanque.commands;
 
 import fr.zcraft.zbanque.Permissions;
-import fr.zcraft.zbanque.commands.shortcuts.WithBankNameCommand;
+import fr.zcraft.zbanque.commands.mixins.WithBankNameCommandMixin;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
 import org.bukkit.command.CommandSender;
@@ -42,7 +42,7 @@ import java.util.List;
 
 
 @CommandInfo (name = "update-structure", usageParameters = "<bank> [verbose]")
-public class StructureUpdateCommand extends WithBankNameCommand
+public class StructureUpdateCommand extends WithBankNameCommandMixin
 {
     @Override
     protected void run() throws CommandException

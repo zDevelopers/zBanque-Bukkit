@@ -29,7 +29,7 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque.commands.shortcuts;
+package fr.zcraft.zbanque.commands.mixins;
 
 import fr.zcraft.zbanque.structure.BanksManager;
 import fr.zcraft.zbanque.structure.containers.Bank;
@@ -42,7 +42,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public abstract class WithBankNameCommand extends Command
+public abstract class WithBankNameCommandMixin extends Command
 {
     protected Bank getBankFromArgs(int bankArgIndex) throws CommandException
     {

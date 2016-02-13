@@ -32,7 +32,7 @@
 package fr.zcraft.zbanque.commands;
 
 import fr.zcraft.zbanque.Permissions;
-import fr.zcraft.zbanque.commands.shortcuts.WithBankNameCommand;
+import fr.zcraft.zbanque.commands.mixins.WithBankNameCommandMixin;
 import fr.zcraft.zbanque.structure.containers.Bank;
 import fr.zcraft.zbanque.structure.containers.BlockType;
 import fr.zcraft.zbanque.structure.containers.Silo;
@@ -48,7 +48,7 @@ import java.util.Set;
 
 
 @CommandInfo (name = "structure", usageParameters = "<bank>")
-public class StructureViewCommand extends WithBankNameCommand
+public class StructureViewCommand extends WithBankNameCommandMixin
 {
     @Override
     protected void run() throws CommandException

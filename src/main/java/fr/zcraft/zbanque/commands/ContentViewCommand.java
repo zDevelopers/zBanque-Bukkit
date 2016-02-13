@@ -32,7 +32,7 @@
 package fr.zcraft.zbanque.commands;
 
 import fr.zcraft.zbanque.Permissions;
-import fr.zcraft.zbanque.commands.shortcuts.WithBankNameCommand;
+import fr.zcraft.zbanque.commands.mixins.WithBankNameCommandMixin;
 import fr.zcraft.zbanque.structure.containers.Bank;
 import fr.zcraft.zbanque.structure.containers.BlockType;
 import fr.zcraft.zbanque.utils.NumberUtils;
@@ -48,7 +48,7 @@ import java.util.Map;
 
 
 @CommandInfo (name = "content", usageParameters = "<bank> [reverse]")
-public class ContentViewCommand extends WithBankNameCommand
+public class ContentViewCommand extends WithBankNameCommandMixin
 {
     @Override
     protected void run() throws CommandException

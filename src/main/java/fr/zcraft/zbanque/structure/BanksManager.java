@@ -41,10 +41,10 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -80,9 +80,9 @@ public class BanksManager
      *
      * @return an unmodifiable set containing the registered banks.
      */
-    public Set<Bank> getBanks()
+    public List<Bank> getBanks()
     {
-        return Collections.unmodifiableSet(new HashSet<>(banks.values()));
+        return Collections.unmodifiableList(new ArrayList<>(banks.values()));
     }
 
     /**

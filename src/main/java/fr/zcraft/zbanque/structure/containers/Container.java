@@ -140,6 +140,17 @@ public class Container
         return content;
     }
 
+    /**
+     * @return This container's type. May be {@code null} if not initialized or invalid.
+     */
+    public Material getContainerType()
+    {
+        return containerType;
+    }
+
+    /**
+     * @return {@code true} if this container is a chest.
+     */
     public boolean isChest()
     {
         return containerType != null && (containerType == Material.CHEST || containerType == Material.TRAPPED_CHEST);

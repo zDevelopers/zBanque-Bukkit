@@ -22,6 +22,7 @@ permissions:
             zbanque.update-structure: true
             zbanque.see-structure: true
             zbanque.see-content: true
+            zbanque.explore: true
 
     zbanque.update-structure:
         description: "Updates the bank structure"
@@ -33,4 +34,8 @@ permissions:
 
     zbanque.see-content:
         description: "Allows to see the bank content (aggregated)"
+        default: true
+
+    zbanque.explore:
+        description: "Allows to see the bank content through the GUI via /zbanque explore"
         default: true

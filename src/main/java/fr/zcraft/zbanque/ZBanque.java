@@ -32,12 +32,14 @@
 package fr.zcraft.zbanque;
 
 import fr.zcraft.zbanque.commands.ContentViewCommand;
+import fr.zcraft.zbanque.commands.ExploreCommand;
 import fr.zcraft.zbanque.commands.ListBanksCommand;
 import fr.zcraft.zbanque.commands.StructureUpdateCommand;
 import fr.zcraft.zbanque.commands.StructureViewCommand;
 import fr.zcraft.zbanque.structure.BanksManager;
 import fr.zcraft.zbanque.utils.AsyncAccess;
 import fr.zcraft.zlib.components.commands.Commands;
+import fr.zcraft.zlib.components.gui.Gui;
 import fr.zcraft.zlib.components.i18n.I18n;
 import fr.zcraft.zlib.core.ZPlugin;
 
@@ -54,7 +56,7 @@ public class ZBanque extends ZPlugin
     {
         INSTANCE = this;
 
-        loadComponents(I18n.class, Commands.class);
+        loadComponents(I18n.class, Commands.class, Gui.class);
 
         I18n.useDefaultPrimaryLocale();
         I18n.setFallbackLocale(Locale.US);
@@ -63,6 +65,7 @@ public class ZBanque extends ZPlugin
 
         Commands.register(
                 "zbanque",
+                ExploreCommand.class,
                 ListBanksCommand.class,
                 ContentViewCommand.class,
                 StructureViewCommand.class,

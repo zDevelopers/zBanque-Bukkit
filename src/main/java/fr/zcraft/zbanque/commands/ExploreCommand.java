@@ -31,31 +31,45 @@
  */
 package fr.zcraft.zbanque.commands;
 
+import fr.zcraft.zbanque.Permissions;
+import fr.zcraft.zbanque.gui.BanksGUI;
 import fr.zcraft.zbanque.structure.BanksManager;
 import fr.zcraft.zbanque.structure.containers.Bank;
-import fr.zcraft.zbanque.utils.NumberUtils;
 import fr.zcraft.zlib.components.commands.Command;
 import fr.zcraft.zlib.components.commands.CommandException;
 import fr.zcraft.zlib.components.commands.CommandInfo;
+import fr.zcraft.zlib.components.gui.Gui;
 import fr.zcraft.zlib.components.i18n.I;
+import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
 
-@CommandInfo (name = "list")
-public class ListBanksCommand extends Command
+@CommandInfo (name = "explore")
+public class ExploreCommand extends Command
 {
     @Override
     protected void run() throws CommandException
     {
         List<Bank> banks = BanksManager.get().getBanks();
 
-        sender.sendMessage(I.tn("{white}{bold}{0} {blue}{bold}bank registered", "{white}{bold}{0} {blue}{bold}banks registered", banks.size()));
-
-        for (Bank bank : banks)
+        if (banks.isEmpty())
         {
-            final Long total = bank.getTotalItemsCount();
-            sender.sendMessage(I.tn("{darkgray}- {white}{0} {gray}(code name {white}{1}{gray} ; {white}{2}{gray} item stored in {white}{3}{gray} silo)", "{darkgray}- {white}{0} {gray}(code name {white}{1}{gray} ; {white}{2}{gray} items stored in {white}{3}{gray} silos)", NumberUtils.long2int(total), bank.getDisplayName(), bank.getCodeName(), total, bank.getSilos().size()));
+            error(I.t("No bank registered."));
         }
+        else if (banks.size() == 1)
+        {
+
+        }
+        else
+        {
+            Gui.open(playerSender(), new BanksGUI(banks));
+        }
+    }
+
+    @Override
+    public boolean canExecute(CommandSender sender)
+    {
+        return Permissions.EXPLORE.isGrantedTo(sender);
     }
 }

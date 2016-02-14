@@ -36,6 +36,7 @@ import org.bukkit.permissions.Permissible;
 
 public enum Permissions
 {
+    EXPLORE("zbanque.explore"),
     SEE_CONTENT("zbanque.see-content"),
     SEE_STRUCTURE("zbanque.see-structure"),
     UPDATE_STRUCTURE("zbanque.update-structure");

@@ -217,6 +217,14 @@ public class Bank
         silos.remove(silo);
     }
 
+    /**
+     * Clears the bank content.
+     */
+    public void clear()
+    {
+        silos.clear();
+    }
+
 
     /**
      * Scans and updates the bank structure.

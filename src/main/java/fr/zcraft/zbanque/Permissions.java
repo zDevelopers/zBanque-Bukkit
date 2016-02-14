@@ -38,6 +38,7 @@ public enum Permissions
 {
     EXPLORE("zbanque.explore"),
     SEE_CONTENT("zbanque.see-content"),
+    TP_TO_CHEST("zbanque.tp-to-chest"),
     SEE_STRUCTURE("zbanque.see-structure"),
     UPDATE_STRUCTURE("zbanque.update-structure");
 

@@ -32,6 +32,10 @@ permissions:
         description: "Allows to see the bank structure"
         default: op
 
+    zbanque.tp-to-chest:
+        description: "Allows a player to teleport himself to a chest, through the structure GUI"
+        default: op
+
     zbanque.see-content:
         description: "Allows to see the bank content (aggregated)"
         default: true

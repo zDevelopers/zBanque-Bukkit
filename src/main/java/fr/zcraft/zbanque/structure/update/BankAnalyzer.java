@@ -84,7 +84,9 @@ public class BankAnalyzer implements Runnable
         this.area = area;
         this.world = area.getLowestCorner().getWorld();
 
-        requestedBy.sendMessage(I.t("{cst}Analyzing the bank area..."));
+        this.bank.clear();
+
+        this.requestedBy.sendMessage(I.t("{cst}Analyzing the bank area..."));
     }
 
     @Override
@@ -122,7 +124,7 @@ public class BankAnalyzer implements Runnable
                         continue;
 
                     final Location mainLocation = new Location(world, x, y, z);
-                    final Location secondaryLocation = getOtherChestPart(mainLocation);
+                    final Location secondaryLocation = getOtherChestPart(mainLocation, blockType);
 
                     final Silo silo = new Silo();
                     final Container container = new Container(mainLocation, secondaryLocation, true);
@@ -271,6 +273,7 @@ public class BankAnalyzer implements Runnable
             return;
 
         analyzedHoppers.add(baseHopper);
+        currentSilo.add(new Container(baseHopper.toLocation(world), null, true));
 
 
         // We look for hoppers around this one
@@ -366,7 +369,7 @@ public class BankAnalyzer implements Runnable
             if (isChest(candidate.getType()))
             {
                 final Location chestMainLocation = chestLocation.toLocation(world);
-                final Container newContainer = new Container(chestMainLocation, getOtherChestPart(chestMainLocation));
+                final Container newContainer = new Container(chestMainLocation, getOtherChestPart(chestMainLocation, candidate.getType()));
 
                 if (addIfNotExcluded(currentSilo, currentSilo, newContainer))
                 {
@@ -392,13 +395,30 @@ public class BankAnalyzer implements Runnable
         return !excluded.contains(added) && list.add(added);
     }
 
+    /**
+     * Checks if the given material is a chest.
+     *
+     * @param type The type.
+     * @return {@code true} if this is a chest (trapped or not).
+     */
     private boolean isChest(Material type)
     {
         return type == Material.CHEST || type == Material.TRAPPED_CHEST;
     }
 
-    private Location getOtherChestPart(Location mainChestLocation)
+    /**
+     * Retrieves the other chest part, if it exists.
+     *
+     * @param mainChestLocation The main chest location.
+     * @param chestType The chest type.
+     *
+     * @return The other chest location, or {@code null} if this chest is a single chest.
+     */
+    private Location getOtherChestPart(Location mainChestLocation, Material chestType)
     {
+        if (mainChestLocation == null || chestType == null)
+            return null;
+
         final int x = mainChestLocation.getBlockX();
         final int y = mainChestLocation.getBlockY();
         final int z = mainChestLocation.getBlockZ();
@@ -408,13 +428,13 @@ public class BankAnalyzer implements Runnable
         final Material east = area.getNextTo(x, y, z, BlockFace.EAST).getType();
         final Material west = area.getNextTo(x, y, z, BlockFace.WEST).getType();
 
-        if (isChest(west) && getSilo(x - 1, y, z) == null)
+        if (chestType.equals(west) && getSilo(x - 1, y, z) == null)
             return mainChestLocation.clone().add(-1, 0, 0);
-        else if (isChest(east) && getSilo(x + 1, y, z) == null)
+        else if (chestType.equals(east) && getSilo(x + 1, y, z) == null)
             return mainChestLocation.clone().add(1, 0, 0);
-        else if (isChest(north) && getSilo(x, y, z - 1) == null)
+        else if (chestType.equals(north) && getSilo(x, y, z - 1) == null)
             return mainChestLocation.clone().add(0, 0, -1);
-        else if (isChest(south) && getSilo(x, y, z + 1) == null)
+        else if (chestType.equals(south) && getSilo(x, y, z + 1) == null)
             return mainChestLocation.clone().add(0, 0, 1);
         else
             return null;

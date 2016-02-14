@@ -31,6 +31,7 @@
  */
 package fr.zcraft.zbanque.gui;
 
+import fr.zcraft.zbanque.Permissions;
 import fr.zcraft.zbanque.structure.containers.Bank;
 import fr.zcraft.zbanque.structure.containers.BlockType;
 import fr.zcraft.zbanque.structure.containers.Container;
@@ -95,9 +96,30 @@ public class BankStructureSiloGUI extends ExplorerGui<Container>
             for (Map.Entry<BlockType, Integer> content : container.getContent().entrySet())
                 lore.add(I.tn("{white}{0}{gray} item of {1}:{2}", "{white}{0}{gray} items of {1}", content.getValue(), content.getValue(), content.getKey().getType(), content.getKey().getData()));
 
+        if (Permissions.TP_TO_CHEST.isGrantedTo(getPlayer()) && container.getMainLocation() != null)
+        {
+            lore.add("");
+            lore.add(I.t("{darkgray}» {white}Click{gray} to teleport yourself to this chest"));
+            lore.add(I.t("{darkred}WARNING! {red}Teleportation to the exact chest location."));
+        }
+
         meta.setLore(lore);
         item.setItemMeta(meta);
 
         return item;
+    }
+
+    @Override
+    protected ItemStack getPickedUpItem(Container container)
+    {
+        onRightClick(container);
+        return null;
+    }
+
+    @Override
+    protected void onRightClick(Container container)
+    {
+        if (Permissions.TP_TO_CHEST.isGrantedTo(getPlayer()) && container.getMainLocation() != null)
+            getPlayer().teleport(container.getMainLocation());
     }
 }

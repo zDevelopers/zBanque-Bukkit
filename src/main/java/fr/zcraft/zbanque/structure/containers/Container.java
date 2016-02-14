@@ -36,6 +36,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
@@ -92,8 +93,8 @@ public class Container
         if (!bypassChecks)
         {
             Validate.notNull(mainLocation, "The main location cannot be null");
-            Validate.isTrue(isValidChestLocation(mainLocation), "The main location must be a chest/hopper");
-            Validate.isTrue(isValidChestLocation(secondaryLocation), "The secondary location must be null or a chest/hopper");
+            Validate.isTrue(isValidContainerLocation(mainLocation), "The main location must be a chest/hopper");
+            Validate.isTrue(isValidContainerLocation(secondaryLocation), "The secondary location must be null or a chest/hopper");
             Validate.isTrue(secondaryLocation == null || mainLocation.getWorld().equals(secondaryLocation.getWorld()), "The secondary location must be in the same world as the first one");
         }
 
@@ -167,8 +168,8 @@ public class Container
     {
         try
         {
-            Validate.isTrue(isValidChestLocation(mainLocation), "Invalid main container location");
-            Validate.isTrue(isValidChestLocation(secondaryLocation), "Invalid secondary chest location");
+            Validate.isTrue(isValidContainerLocation(mainLocation), "Invalid main container location");
+            Validate.isTrue(isValidContainerLocation(secondaryLocation), "Invalid secondary chest location");
 
             checkChest();
             Validate.notNull(containerType, "Invalid container type");
@@ -180,7 +181,7 @@ public class Container
 
         content.clear();
 
-        final Inventory inventory = ((org.bukkit.block.Chest) mainLocation.getBlock().getState()).getInventory();
+        final Inventory inventory = ((InventoryHolder) mainLocation.getBlock().getState()).getInventory();
         for (ItemStack stack : inventory)
         {
             if (stack != null && stack.getType() != Material.AIR)
@@ -219,7 +220,7 @@ public class Container
      * @return {@code true} if the block at this location is a chest, or if the location is {@code
      * null}.
      */
-    private boolean isValidChestLocation(Location location)
+    private boolean isValidContainerLocation(Location location)
     {
         if (location == null)
             return true;

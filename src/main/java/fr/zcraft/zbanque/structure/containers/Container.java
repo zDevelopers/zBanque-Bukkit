@@ -44,20 +44,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- * A chest or a hopper in the bank, to be understood as a Minecraft chest/hopper.
+ * A chest or a hopper in the bank, to be understood as a Minecraft
+ * chest/hopper.
  *
  * @see Silo Containers are stored inside silos.
  */
 public class Container
 {
     /**
-     * The chest type. Either {@link Material#CHEST}, {@link Material#TRAPPED_CHEST} or {@link Material#HOPPER}.
+     * The chest type. Either {@link Material#CHEST}, {@link
+     * Material#TRAPPED_CHEST} or {@link Material#HOPPER}.
      */
     private Material containerType = null;
 
     /**
-     * The main chest location: the only one if this chest is a single one; the exposed one (if it
-     * makes sense) else.
+     * The main chest location: the only one if this chest is a single one; the
+     * exposed one (if it makes sense) else.
      */
     private final Location mainLocation;
 
@@ -75,17 +77,20 @@ public class Container
     /**
      * This constructor must be called from the Bukkit main thread.
      *
-     * @param mainLocation      The main chest location: the only one if this chest/hopper is a single one;
-     *                          the exposed one (if it makes sense) else.
-     * @param secondaryLocation The secondary location. {@code null} if this chest is a single
-     *                          chest or a hopper.
-     * @param bypassChecks      If true, no coherence check will be performed and this constructor
-     *                          will become thread safe. <strong>You must be <em>ABSOLUTELY
-     *                          SURE</em> the data provided is valid if this is set to true, to
-     *                          avoid data corruption!</strong>
+     * @param mainLocation      The main chest location: the only one if this
+     *                          chest/hopper is a single one; the exposed one
+     *                          (if it makes sense) else.
+     * @param secondaryLocation The secondary location. {@code null} if this
+     *                          chest is a single chest or a hopper.
+     * @param bypassChecks      If true, no coherence check will be performed
+     *                          and this constructor will become thread safe.
+     *                          <strong>You must be <em>ABSOLUTELY SURE</em> the
+     *                          data provided is valid if this is set to true,
+     *                          to avoid data corruption!</strong>
      *
-     * @throws IllegalArgumentException if the main location is null, or if some of the given
-     *                                  locations don't point to a chest/hopper, or if this chest is not a
+     * @throws IllegalArgumentException if the main location is null, or if some
+     *                                  of the given locations don't point to a
+     *                                  chest/hopper, or if this chest is not a
      *                                  single chest.
      */
     public Container(Location mainLocation, Location secondaryLocation, boolean bypassChecks)
@@ -112,14 +117,16 @@ public class Container
     /**
      * This constructor must be called from the Bukkit main thread.
      *
-     * @param mainLocation      The main chest location: the only one if this chest is a single one;
-     *                          the exposed one (if it makes sense) else.
-     * @param secondaryLocation The secondary location. {@code null} if this chest is a single
-     *                          chest.
+     * @param mainLocation      The main chest location: the only one if this
+     *                          chest is a single one; the exposed one (if it
+     *                          makes sense) else.
+     * @param secondaryLocation The secondary location. {@code null} if this
+     *                          chest is a single chest.
      *
-     * @throws IllegalArgumentException if the main location is null, or if some of the given
-     *                                  locations don't point to a chest, or if this chest is not a
-     *                                  single chest.
+     * @throws IllegalArgumentException if the main location is null, or if some
+     *                                  of the given locations don't point to a
+     *                                  chest, or if this chest is not a single
+     *                                  chest.
      */
     public Container(Location mainLocation, Location secondaryLocation)
     {
@@ -142,11 +149,27 @@ public class Container
     }
 
     /**
-     * @return This container's type. May be {@code null} if not initialized or invalid.
+     * @return This container's type. May be {@code null} if not initialized or
+     * invalid.
      */
     public Material getContainerType()
     {
         return containerType;
+    }
+
+    /**
+     * Sets this container type.
+     *
+     * <p>Only used for deserialization, use the {@link #update()} method to set
+     * this from the world in normal use.</p>
+     *
+     * @param containerType The container type (either {@link Material#CHEST},
+     *                      {@link Material#TRAPPED_CHEST}, or {@link
+     *                      Material#HOPPER})
+     */
+    public void setContainerType(Material containerType)
+    {
+        this.containerType = containerType;
     }
 
     /**
@@ -162,7 +185,8 @@ public class Container
      *
      * <p>Must be called from the Bukkit main thread.</p>
      *
-     * @throws IllegalStateException if the chest is no longer a chest or hopper.
+     * @throws IllegalStateException if the chest is no longer a chest or
+     *                               hopper.
      */
     public void update()
     {
@@ -199,9 +223,10 @@ public class Container
     /**
      * Updates the amount of a specific block type.
      *
-     * <p>For import from file only, this method should not be used out of this specific case.</p>
+     * <p>For import from file only, this method should not be used out of this
+     * specific case.</p>
      *
-     * @param type The type.
+     * @param type   The type.
      * @param amount The amount of items of this type in this container.
      */
     public void updateBlockType(BlockType type, Integer amount)
@@ -217,8 +242,8 @@ public class Container
      *
      * @param location The location.
      *
-     * @return {@code true} if the block at this location is a chest, or if the location is {@code
-     * null}.
+     * @return {@code true} if the block at this location is a chest, or if the
+     * location is {@code null}.
      */
     private boolean isValidContainerLocation(Location location)
     {
@@ -230,8 +255,8 @@ public class Container
     }
 
     /**
-     * Updates the container type (normal, trapped or hopper). Sets it to {@code null} if the chest is no longer
-     * an unique chest.
+     * Updates the container type (normal, trapped or hopper). Sets it to {@code
+     * null} if the chest is no longer an unique chest.
      *
      * <p>Must be called from the Bukkit main thread.</p>
      */

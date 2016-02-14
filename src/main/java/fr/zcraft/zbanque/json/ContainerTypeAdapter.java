@@ -51,35 +51,35 @@ public class ContainerTypeAdapter implements JsonDeserializer<Container>
     @Override
     public Container deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException
     {
-        JsonObject rawContainer = jsonElement.getAsJsonObject();
+        final JsonObject rawContainer = jsonElement.getAsJsonObject();
 
-        Location main = jsonDeserializationContext.deserialize(rawContainer.get("mainLocation"), Location.class);
+        final Location main = jsonDeserializationContext.deserialize(rawContainer.get("mainLocation"), Location.class);
         Location secondary = null;
 
-        JsonElement rawSecondaryLocation = rawContainer.get("secondaryLocation");
+        final JsonElement rawSecondaryLocation = rawContainer.get("secondaryLocation");
         if (rawSecondaryLocation != null)
             secondary = jsonDeserializationContext.deserialize(rawSecondaryLocation, Location.class);
 
-        Container container = new Container(main, secondary, true);
+        final Container container = new Container(main, secondary, true);
 
-        JsonObject content = rawContainer.getAsJsonObject("content");
+        final JsonObject content = rawContainer.getAsJsonObject("content");
         for (Map.Entry<String, JsonElement> entry : content.entrySet())
         {
-            String[] rawType = entry.getKey().split(":");
+            final String[] rawType = entry.getKey().split(":");
             if (rawType.length != 2)
             {
                 PluginLogger.error("Malformed JSON content: malformed item type {0} in {1}", entry.getKey(), jsonElement.toString());
                 continue;
             }
 
-            Material itemType = Material.matchMaterial(rawType[0]);
+            final Material itemType = Material.matchMaterial(rawType[0]);
             if (itemType == null)
             {
                 PluginLogger.error("Malformed JSON content: unknown item type {0} in {1}", rawType[0], jsonElement.toString());
                 continue;
             }
 
-            Short itemData;
+            final Short itemData;
             try
             {
                 itemData = Short.valueOf(rawType[1]);
@@ -95,6 +95,12 @@ public class ContainerTypeAdapter implements JsonDeserializer<Container>
 
             container.updateBlockType(blockType, amount);
         }
+
+        final JsonElement rawContainerType = rawContainer.get("containerType");
+        if (rawContainerType != null)
+            container.setContainerType(Material.matchMaterial(rawContainerType.getAsString()));
+
+        PluginLogger.info("Retrieved container type: {0} (raw: {1})", container.getContainerType(), rawContainerType);
 
         return container;
     }

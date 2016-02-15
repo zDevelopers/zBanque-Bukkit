@@ -168,7 +168,7 @@ public abstract class PacketPlayOut
      */
     public void onError(Throwable exception)
     {
-        PluginLogger.error("Error while sending a packet", exception);
+        PluginLogger.error("Error while sending a {0} packet", exception, this.getClass().getSimpleName());
     }
 
 

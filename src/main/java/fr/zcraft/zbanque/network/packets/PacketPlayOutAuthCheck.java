@@ -38,12 +38,12 @@ import fr.zcraft.zbanque.ZBanque;
 import fr.zcraft.zlib.tools.PluginLogger;
 
 
-public class PacketPlayOutPing extends PacketPlayOut
+public class PacketPlayOutAuthCheck extends PacketPlayOut
 {
-    public PacketPlayOutPing()
+    public PacketPlayOutAuthCheck()
     {
-        setEndpoint("/ping");
-        setPacketType(PacketType.GET);
+        setEndpoint("/check_auth");
+        setPacketType(PacketType.POST);
     }
 
     @Override
@@ -55,29 +55,47 @@ public class PacketPlayOutPing extends PacketPlayOut
             invalidResponse = true;
 
         JsonObject object = data.getAsJsonObject();
-        if (object.get("version") == null || !object.get("version").isJsonPrimitive())
+
+        if ((!object.has("username") || !object.get("username").isJsonPrimitive()) || (!object.has("permissions") || !object.get("permissions").isJsonObject()))
             invalidResponse = true;
 
         if (invalidResponse)
         {
-            PluginLogger.error("Strange response received from the /ping endpoint: {0}", data);
-            PluginLogger.warning("Cannot check the webservice version, the networking system may not work!");
+            PluginLogger.error("Strange response received from the /check_auth endpoint: {0}", data);
+            PluginLogger.warning("You are authenticated, but the permissions cannot be checked. Requests may fail!");
             return;
         }
 
-        String version = object.getAsJsonPrimitive("version").getAsString();
+        final JsonObject permissions = object.get("permissions").getAsJsonObject();
 
-        PluginLogger.info("WebService contacted successfully - remote version: {0}", version);
-        if (!version.startsWith(ZBanque.WEBSERVICE_COMPATIBLE_VERSION))
-            PluginLogger.warning("Remote major version is not the same as the plugin version, errors may occur.");
+        final String username = object.get("username").getAsString();
+        final Boolean canPost = isPermissionGranted(permissions, "can_post");
 
-        ZBanque.get().setWebServiceEnabled(true);
+        PluginLogger.info("Authentication successful against the webservice as {0}", username);
+
+        if (!canPost)
+        {
+            PluginLogger.error("The user {0} is not allowed to send POST request. Disabling webservice integration.");
+            ZBanque.get().setWebServiceEnabled(false);
+        }
+        else
+        {
+            ZBanque.get().setWebServiceEnabled(true);
+        }
     }
 
     @Override
     public void onError(Throwable exception)
     {
-        PluginLogger.error("Cannot contact the webservice at {0} - the network operations will be disabled", exception, Config.WEBSERVICE_URL.get());
+        PluginLogger.error("Unable to check authentication permissions, are you sure the credentials are valid?");
+        PluginLogger.error("Username provided: {0}", Config.WEBSERVICE_USERNAME.get());
+        PluginLogger.error("The network operations will be disabled", exception, Config.WEBSERVICE_URL.get());
+
         ZBanque.get().setWebServiceEnabled(false);
+    }
+
+    private boolean isPermissionGranted(JsonObject permissions, String permission)
+    {
+        return permissions.has(permission) && permissions.get(permission).isJsonPrimitive() && permissions.get(permission).getAsBoolean();
     }
 }

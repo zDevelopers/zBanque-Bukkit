@@ -43,6 +43,7 @@ import fr.zcraft.zlib.components.worker.WorkerCallback;
 import fr.zcraft.zlib.components.worker.WorkerRunnable;
 import fr.zcraft.zlib.tools.Callback;
 import fr.zcraft.zlib.tools.PluginLogger;
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -123,10 +124,8 @@ public class PacketSender extends Worker
             @Override
             public JsonElement run() throws Throwable
             {
-                PluginLogger.info("Sending packet");
                 if (!ZBanque.get().isWebServiceEnabled())
                     return null;
-                PluginLogger.info("Sending packet - enabled");
 
                 final String url = Config.WEBSERVICE_URL.get() + packet.getEndpoint();
                 final String data = packet.getData() == null ? null : packet.getData().toString();
@@ -141,7 +140,6 @@ public class PacketSender extends Worker
 
     private static HTTPResponse makeRequest(String url, PacketPlayOut.PacketType method, String data) throws Throwable
     {
-        PluginLogger.info("Request method: {0}", method);
         // ***  REQUEST  ***
 
         final URL urlObj = new URL(url);
@@ -149,6 +147,8 @@ public class PacketSender extends Worker
 
         connection.setRequestMethod(method.name());
         connection.setRequestProperty("User-Agent", USER_AGENT);
+
+        authenticateRequest(connection);
 
         connection.setDoOutput(true);
 
@@ -229,5 +229,21 @@ public class PacketSender extends Worker
         // ***  END  ***
 
         return response;
+    }
+
+    private static void authenticateRequest(HttpURLConnection connection)
+    {
+        String user = Config.WEBSERVICE_USERNAME.get();
+        String pass = Config.WEBSERVICE_PASSWORD.get();
+
+        if (user == null || user.isEmpty())
+            return;
+
+        if (pass == null)
+            pass = "";
+
+        String authToken = Base64.encodeBase64URLSafeString((user + ":" + pass).getBytes());
+
+        connection.setRequestProperty("Authorization", "Basic " + authToken);
     }
 }

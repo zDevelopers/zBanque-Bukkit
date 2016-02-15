@@ -31,12 +31,14 @@
  */
 package fr.zcraft.zbanque;
 
+import com.google.gson.JsonElement;
 import fr.zcraft.zbanque.commands.ContentViewCommand;
 import fr.zcraft.zbanque.commands.ExploreCommand;
 import fr.zcraft.zbanque.commands.ListBanksCommand;
 import fr.zcraft.zbanque.commands.StructureUpdateCommand;
 import fr.zcraft.zbanque.commands.StructureViewCommand;
 import fr.zcraft.zbanque.network.PacketSender;
+import fr.zcraft.zbanque.network.packets.PacketPlayOutAuthCheck;
 import fr.zcraft.zbanque.network.packets.PacketPlayOutPing;
 import fr.zcraft.zbanque.structure.BanksManager;
 import fr.zcraft.zbanque.utils.AsyncAccess;
@@ -45,6 +47,7 @@ import fr.zcraft.zlib.components.configuration.Configuration;
 import fr.zcraft.zlib.components.gui.Gui;
 import fr.zcraft.zlib.components.i18n.I18n;
 import fr.zcraft.zlib.core.ZPlugin;
+import fr.zcraft.zlib.tools.Callback;
 import fr.zcraft.zlib.tools.PluginLogger;
 
 import java.util.Locale;
@@ -103,6 +106,7 @@ public class ZBanque extends ZPlugin
     {
         if (!Config.WEBSERVICE_URL.isDefined() || Config.WEBSERVICE_URL.get().isEmpty())
         {
+            PluginLogger.info("The webservice integration is disabled in the configuration.");
             setWebServiceEnabled(false);
             return;
         }
@@ -113,7 +117,18 @@ public class ZBanque extends ZPlugin
             return;
         }
 
-        new PacketPlayOutPing().send();
+        final PacketPlayOutPing ping = new PacketPlayOutPing();
+
+        ping.addSuccessCallback(new Callback<JsonElement>()
+        {
+            @Override
+            public void call(JsonElement parameter)
+            {
+                new PacketPlayOutAuthCheck().send();
+            }
+        });
+
+        ping.send();
     }
 
     public boolean isWebServiceEnabled()

@@ -33,5 +33,11 @@ banks:
         firstCorner: "-10;0;-10"
         otherCorner: "10;60;10"
 
-# If you want to use this with the web interface, set here the API base URL (without trailing slash).
-webservice: ""
+
+webservice:
+    # If you want to use this with the web interface, set here the API base URL (without trailing slash).
+    url: ""
+
+    # Put here the authentification informations required.
+    username: ""
+    password: ""

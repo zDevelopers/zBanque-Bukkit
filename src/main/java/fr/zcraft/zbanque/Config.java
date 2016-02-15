@@ -36,5 +36,7 @@ import fr.zcraft.zlib.components.configuration.ConfigurationItem;
 
 public final class Config
 {
-    public final static ConfigurationItem<String> WEBSERVICE_URL = ConfigurationItem.item("webservice", "");
+    public final static ConfigurationItem<String> WEBSERVICE_URL = ConfigurationItem.item("webservice.url", "");
+    public final static ConfigurationItem<String> WEBSERVICE_USERNAME = ConfigurationItem.item("webservice.username", "");
+    public final static ConfigurationItem<String> WEBSERVICE_PASSWORD = ConfigurationItem.item("webservice.password", "");
 }

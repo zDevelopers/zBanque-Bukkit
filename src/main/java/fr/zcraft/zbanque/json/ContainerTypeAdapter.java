@@ -100,8 +100,6 @@ public class ContainerTypeAdapter implements JsonDeserializer<Container>
         if (rawContainerType != null)
             container.setContainerType(Material.matchMaterial(rawContainerType.getAsString()));
 
-        PluginLogger.info("Retrieved container type: {0} (raw: {1})", container.getContainerType(), rawContainerType);
-
         return container;
     }
 }

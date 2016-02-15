@@ -36,19 +36,31 @@ import fr.zcraft.zbanque.commands.ExploreCommand;
 import fr.zcraft.zbanque.commands.ListBanksCommand;
 import fr.zcraft.zbanque.commands.StructureUpdateCommand;
 import fr.zcraft.zbanque.commands.StructureViewCommand;
+import fr.zcraft.zbanque.network.PacketSender;
+import fr.zcraft.zbanque.network.packets.PacketPlayOutPing;
 import fr.zcraft.zbanque.structure.BanksManager;
 import fr.zcraft.zbanque.utils.AsyncAccess;
 import fr.zcraft.zlib.components.commands.Commands;
+import fr.zcraft.zlib.components.configuration.Configuration;
 import fr.zcraft.zlib.components.gui.Gui;
 import fr.zcraft.zlib.components.i18n.I18n;
 import fr.zcraft.zlib.core.ZPlugin;
+import fr.zcraft.zlib.tools.PluginLogger;
 
 import java.util.Locale;
 
 
 public class ZBanque extends ZPlugin
 {
+    public static final String WEBSERVICE_COMPATIBLE_VERSION = "1.";
+
     private static ZBanque INSTANCE;
+    private boolean webServiceEnabled = true;
+
+    public static ZBanque get()
+    {
+        return INSTANCE;
+    }
 
     @SuppressWarnings ("unchecked")
     @Override
@@ -56,12 +68,13 @@ public class ZBanque extends ZPlugin
     {
         INSTANCE = this;
 
-        loadComponents(I18n.class, Commands.class, Gui.class);
+        loadComponents(I18n.class, Commands.class, Gui.class, PacketSender.class);
 
         I18n.useDefaultPrimaryLocale();
         I18n.setFallbackLocale(Locale.US);
 
         saveDefaultConfig();
+        Configuration.init(Config.class);
 
         Commands.register(
                 "zbanque",
@@ -75,6 +88,8 @@ public class ZBanque extends ZPlugin
         AsyncAccess.update();
 
         BanksManager.get().registerBanksInConfig(getConfig().getConfigurationSection("banks"));
+
+        enableWebService();
     }
 
     @Override
@@ -84,8 +99,30 @@ public class ZBanque extends ZPlugin
         super.onDisable();
     }
 
-    public static ZBanque get()
+    private void enableWebService()
     {
-        return INSTANCE;
+        if (!Config.WEBSERVICE_URL.isDefined() || Config.WEBSERVICE_URL.get().isEmpty())
+        {
+            setWebServiceEnabled(false);
+            return;
+        }
+        else if (!Config.WEBSERVICE_URL.get().toLowerCase().startsWith("http"))
+        {
+            PluginLogger.error("Non-HTTP or HTTPS webservice URLs are currently not supported.");
+            setWebServiceEnabled(false);
+            return;
+        }
+
+        new PacketPlayOutPing().send();
+    }
+
+    public boolean isWebServiceEnabled()
+    {
+        return webServiceEnabled;
+    }
+
+    public void setWebServiceEnabled(boolean webServiceEnabled)
+    {
+        this.webServiceEnabled = webServiceEnabled;
     }
 }

@@ -31,6 +31,8 @@
  */
 package fr.zcraft.zbanque.structure.update;
 
+import fr.zcraft.zbanque.ZBanque;
+import fr.zcraft.zbanque.network.packets.PacketPlayOutSilos;
 import fr.zcraft.zbanque.structure.containers.Area;
 import fr.zcraft.zbanque.structure.containers.BlockType;
 import fr.zcraft.zbanque.structure.containers.Container;
@@ -171,7 +173,15 @@ public class BankAnalyzer implements Runnable
                                 PluginLogger.warning("- {0}", container);
                         }
 
+
+                        requestedBy.sendMessage(I.t("{cst}Extracting silos main chests..."));
                         extractMainChests();
+
+                        if (ZBanque.get().isWebServiceEnabled())
+                        {
+                            requestedBy.sendMessage(I.t("{cst}Sending data..."));
+                            new PacketPlayOutSilos(bank).send();
+                        }
                     }
                 });
             }
@@ -180,7 +190,6 @@ public class BankAnalyzer implements Runnable
 
     private void extractMainChests()
     {
-        requestedBy.sendMessage(I.t("{cst}Extracting silos main chests..."));
         for (Silo silo : bank.getSilos())
         {
             for (Container container : silo.getContainers())

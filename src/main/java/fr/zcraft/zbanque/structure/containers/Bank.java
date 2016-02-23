@@ -66,6 +66,8 @@ public class Bank
     private final transient Location lowestCorner;
     private final transient Location highestCorner;
 
+    private final transient Location center;
+
     private final Set<Silo> silos = new CopyOnWriteArraySet<>();
 
 
@@ -74,8 +76,11 @@ public class Bank
      * @param displayName The bank's display name.
      * @param corner1     A corner of the bank area.
      * @param corner2     The opposite corner of the bank area.
+     * @param center      The center of the bank, used by the web part of the
+     *                    bank manager. Defaults to the center of the area if
+     *                    {@code null}.
      */
-    public Bank(final String codeName, final String displayName, final Location corner1, final Location corner2)
+    public Bank(final String codeName, final String displayName, final Location corner1, final Location corner2, final Location center)
     {
         this.codeName = codeName;
         this.displayName = displayName;
@@ -93,6 +98,20 @@ public class Bank
                 Math.max(Math.min(corner1.getY(), corner2.getY()), 0),
                 Math.min(corner1.getZ(), corner2.getZ())
         );
+
+        if (center != null)
+        {
+            this.center = center;
+        }
+        else
+        {
+            this.center = new Location(
+                    corner1.getWorld(),
+                    (lowestCorner.getX() + highestCorner.getX()) / 2,
+                    (lowestCorner.getY() + highestCorner.getY()) / 2,
+                    (lowestCorner.getZ() + highestCorner.getZ()) / 2
+            );
+        }
     }
 
     /**
@@ -125,6 +144,14 @@ public class Bank
     public Location getHighestCorner()
     {
         return highestCorner;
+    }
+
+    /**
+     * @return The center of the bank, either as defined in the config (if defined) or the center of the area (else).
+     */
+    public Location getCenter()
+    {
+        return center;
     }
 
     /**

@@ -69,7 +69,7 @@ public final class LocationUtils
     public static Location string2Location(World world, String raw)
     {
         String[] parts = raw.split(";");
-        Validate.isTrue(parts.length >= 3, "The location must contains at least three coordinates.");
+        Validate.isTrue(parts.length >= 3, "The location must contains at least three coordinates");
 
         Location location = new Location(
                 world,

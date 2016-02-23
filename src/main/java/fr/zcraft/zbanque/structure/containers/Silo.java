@@ -110,6 +110,30 @@ public class Silo
         return siloContent;
     }
 
+    /**
+     * Retrieves the block type mainly found in this silo.
+     *
+     * Warning: the content is re-scanned each time, not cached.
+     *
+     * @return the block type mainly found in this silo.
+     */
+    public BlockType getMainItem()
+    {
+        BlockType main = null;
+        Integer amount = -1;
+
+        for (Map.Entry<BlockType, Integer> item : getContent().entrySet())
+        {
+            if (item.getValue() > amount)
+            {
+                amount = item.getValue();
+                main = item.getKey();
+            }
+        }
+
+        return main;
+    }
+
 
     @Override
     public boolean equals(Object o)

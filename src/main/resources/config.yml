@@ -15,6 +15,9 @@
 #         firstCorner: "-10;0;-10"
 #         otherCorner: "10;60;10"
 #
+#        # The bank's center. If blank, the center of the area is used.
+#        center: ""
+#
 #     other-bank:
 #         # The bank display name
 #         name: "Other bank"
@@ -23,6 +26,9 @@
 #         world: "world"
 #         firstCorner: "-100;0;-100"
 #         otherCorner: "-60;120;-30"
+#
+#        # The bank's center. If blank, the center of the area is used.
+#        center: ""
 banks:
     main:
         # The bank display name
@@ -32,6 +38,9 @@ banks:
         world: "world"
         firstCorner: "-10;0;-10"
         otherCorner: "10;60;10"
+
+        # The bank's center. If blank, the center of the area is used.
+        center: ""
 
 
 webservice:

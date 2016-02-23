@@ -132,9 +132,12 @@ public class BanksManager
                 String rawWorld = bankConfig.getString("world");
                 String rawCorner1 = bankConfig.getString("firstCorner");
                 String rawCorner2 = bankConfig.getString("otherCorner");
+                String rawCenter = bankConfig.getString("center");
 
                 Location corner1;
                 Location corner2;
+
+                Location center;
 
                 if (name == null || rawWorld == null || rawCorner1 == null || rawCorner2 == null)
                 {
@@ -160,7 +163,17 @@ public class BanksManager
                     continue;
                 }
 
-                registerBank(new Bank(bankCodeName, name, corner1, corner2));
+                try
+                {
+                    center = LocationUtils.string2Location(world, rawCenter);
+                }
+                catch (IllegalArgumentException | NullPointerException e)
+                {
+                    PluginLogger.warning("Cannot load the {0} bank center: blank or invalid coordinate. Using the center of the area. Error: {1}.", bankCodeName, e.getMessage());
+                    center = null;
+                }
+
+                registerBank(new Bank(bankCodeName, name, corner1, corner2, center));
             }
         }
 

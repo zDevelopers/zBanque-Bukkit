@@ -32,6 +32,7 @@
 package fr.zcraft.zbanque.network;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import fr.zcraft.zbanque.Config;
@@ -47,12 +48,14 @@ import org.apache.commons.codec.binary.Base64;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-@WorkerAttributes (name = "zbanque-networking-out")
+@WorkerAttributes (name = "networking-out")
 public class PacketSender extends Worker
 {
     private final static String USER_AGENT = "zBanqueBukkit/" + ZBanque.get().getDescription().getVersion();
@@ -100,6 +103,17 @@ public class PacketSender extends Worker
                     PluginLogger.error("The packet {0} received an invalid JSON response {1} (HTTP code {2})", packet.getClass().getSimpleName(), packet.getHttpResponse().getBody(), packet.getHttpResponse().getResponseCode());
                     return;
                 }
+                else if (exception instanceof FailedRequestException)
+                {
+                    PluginLogger.error("The packet {0} request failed (HTTP code {1})", packet.getClass().getSimpleName(), ((FailedRequestException) exception).getResponse().getResponseCode());
+
+                    final JsonObject error = ((FailedRequestException) exception).getJsonError().getAsJsonObject();
+                    PluginLogger.error("Message: {0}", error.getAsJsonPrimitive("message").getAsString());
+                    PluginLogger.error("Error: {0}", error.getAsJsonPrimitive("erreur").getAsString());
+                    PluginLogger.error("Error code: {0}", error.getAsJsonPrimitive("code").getAsString());
+
+                    return;
+                }
 
                 packet.onError(exception);
 
@@ -133,6 +147,9 @@ public class PacketSender extends Worker
                 final HTTPResponse response = makeRequest(url, packet.getPacketType(), data);
                 packet.setHttpResponse(response);
 
+                if (response.isFail())
+                    throw new FailedRequestException(response);
+
                 return new JsonParser().parse(response.getBody());
             }
         }, callback);
@@ -152,83 +169,122 @@ public class PacketSender extends Worker
 
         connection.setDoOutput(true);
 
-        if (method == PacketPlayOut.PacketType.POST)
+        try
         {
-            DataOutputStream out = null;
             try
             {
-                out = new DataOutputStream(connection.getOutputStream());
-                if (data != null)
-                    out.writeBytes(data);
-                out.flush();
+                connection.connect();
+            }
+            catch (IOException ignored) {}
+
+            if (method == PacketPlayOut.PacketType.POST)
+            {
+                DataOutputStream out = null;
+                try
+                {
+                    out = new DataOutputStream(connection.getOutputStream());
+                    if (data != null)
+                        out.writeBytes(data);
+                    out.flush();
+                }
+                finally
+                {
+                    if (out != null)
+                        out.close();
+                }
+            }
+
+
+            // ***  RESPONSE  ***
+
+
+            int responseCode;
+            boolean failed = false;
+
+            try
+            {
+                responseCode = connection.getResponseCode();
+            }
+            catch (IOException e)
+            {
+                // HttpUrlConnection will throw an IOException if any 4XX
+                // response is sent. If we request the status again, this
+                // time the internal status will be properly set, and we'll be
+                // able to retrieve it.
+                // Thanks to Iñigo.
+                responseCode = connection.getResponseCode();
+                failed = true;
+            }
+
+            BufferedReader in = null;
+            String body = "";
+            try
+            {
+                InputStream stream;
+                try
+                {
+                    stream = connection.getInputStream();
+                }
+                catch (IOException e)
+                {
+                    // Same as before
+                    stream = connection.getErrorStream();
+                    failed = true;
+                }
+
+                in = new BufferedReader(new InputStreamReader(stream));
+                StringBuilder responseBuilder = new StringBuilder();
+
+                String inputLine;
+                while ((inputLine = in.readLine()) != null)
+                {
+                    responseBuilder.append(inputLine);
+                }
+
+                body = responseBuilder.toString();
             }
             finally
             {
-                if (out != null)
-                    out.close();
+                if (in != null)
+                    in.close();
             }
-        }
 
+            HTTPResponse response = new HTTPResponse();
+            response.setResponseCode(responseCode, failed);
+            response.setResponseBody(body);
 
-
-        // ***  RESPONSE  ***
-
-
-        int responseCode = connection.getResponseCode();
-
-        BufferedReader in = null;
-        String body = "";
-        try
-        {
-            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder responseBuilder = new StringBuilder();
-
-            String inputLine;
-            while ((inputLine = in.readLine()) != null)
+            int i = 0;
+            String headerName, headerContent;
+            while ((headerName = connection.getHeaderFieldKey(i)) != null)
             {
-                responseBuilder.append(inputLine);
+                headerContent = connection.getHeaderField(i);
+                response.addHeader(headerName, headerContent);
             }
 
-            body = responseBuilder.toString();
+
+            // ***  REDIRECTION  ***
+
+            switch (responseCode)
+            {
+                case 301:
+                case 302:
+                case 307:
+                case 308:
+                    if (response.getHeaders().containsKey("Location"))
+                    {
+                        response = makeRequest(response.getHeaders().get("Location"), method, data);
+                    }
+            }
+
+
+            // ***  END  ***
+
+            return response;
         }
         finally
         {
-            if (in != null)
-                in.close();
+            connection.disconnect();
         }
-
-        HTTPResponse response = new HTTPResponse();
-        response.setResponseCode(responseCode);
-        response.setResponseBody(body);
-
-        int i = 0;
-        String headerName, headerContent;
-        while ((headerName = connection.getHeaderFieldKey(i)) != null)
-        {
-            headerContent = connection.getHeaderField(i);
-            response.addHeader(headerName, headerContent);
-        }
-
-
-        // ***  REDIRECTION  ***
-
-        switch (responseCode)
-        {
-            case 301:
-            case 302:
-            case 307:
-            case 308:
-                if (response.getHeaders().containsKey("Location"))
-                {
-                    response = makeRequest(response.getHeaders().get("Location"), method, data);
-                }
-        }
-
-
-
-        // ***  END  ***
-
-        return response;
     }
 
     private static void authenticateRequest(HttpURLConnection connection)

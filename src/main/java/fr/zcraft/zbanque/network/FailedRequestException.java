@@ -31,51 +31,32 @@
  */
 package fr.zcraft.zbanque.network;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import java.io.IOException;
 
 
-public class HTTPResponse
+public class FailedRequestException extends IOException
 {
-    private int responseCode;
-    private boolean failed;
+    private HTTPResponse response;
+    private JsonElement jsonError;
 
-    private String responseBody;
-    private Map<String, String> responseHeaders = new ConcurrentHashMap<>();
-
-    public void setResponseCode(int responseCode, boolean failed)
+    public FailedRequestException(HTTPResponse response)
     {
-        this.responseCode = responseCode;
-        this.failed = failed;
+        super("HTTP error " + response.getResponseCode());
+
+        this.response = response;
+        this.jsonError = new JsonParser().parse(response.getBody());
     }
 
-    public void setResponseBody(String responseBody)
+    public HTTPResponse getResponse()
     {
-        this.responseBody = responseBody;
+        return response;
     }
 
-    public void addHeader(String name, String value)
+    public JsonElement getJsonError()
     {
-        responseHeaders.put(name, value);
-    }
-
-    public int getResponseCode()
-    {
-        return responseCode;
-    }
-
-    public boolean isFail()
-    {
-        return failed;
-    }
-
-    public String getBody()
-    {
-        return responseBody;
-    }
-
-    public Map<String, String> getHeaders()
-    {
-        return responseHeaders;
+        return jsonError;
     }
 }

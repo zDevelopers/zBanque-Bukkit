@@ -31,13 +31,14 @@
  */
 package fr.zcraft.zbanque.structure.update;
 
+import com.google.gson.JsonElement;
 import fr.zcraft.zbanque.ZBanque;
 import fr.zcraft.zbanque.network.packets.PacketPlayOutSilos;
 import fr.zcraft.zbanque.structure.containers.Area;
+import fr.zcraft.zbanque.structure.containers.Bank;
 import fr.zcraft.zbanque.structure.containers.BlockType;
 import fr.zcraft.zbanque.structure.containers.Container;
 import fr.zcraft.zbanque.structure.containers.Silo;
-import fr.zcraft.zbanque.structure.containers.Bank;
 import fr.zcraft.zbanque.utils.LocationUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.Callback;
@@ -180,7 +181,31 @@ public class BankAnalyzer implements Runnable
                         if (ZBanque.get().isWebServiceEnabled())
                         {
                             requestedBy.sendMessage(I.t("{cst}Sending data..."));
-                            new PacketPlayOutSilos(bank).send();
+
+                            new PacketPlayOutSilos(bank)
+                                .addSuccessCallback(new Callback<JsonElement>()
+                                {
+                                    @Override
+                                    public void call(JsonElement parameter)
+                                    {
+                                        requestedBy.sendMessage(I.t("{cst}{bold}Update done."));
+                                    }
+                                })
+                                .addErrorCallback(new Callback<Throwable>()
+                                {
+                                    @Override
+                                    public void call(Throwable e)
+                                    {
+                                        requestedBy.sendMessage(I.t("{ce}Cannot send data to the webservice. {cst}See console for details."));
+                                        requestedBy.sendMessage(I.t("{cst}{bold}Structure updated successfully but not sent."));
+                                    }
+                                })
+
+                                .send();
+                        }
+                        else
+                        {
+                            requestedBy.sendMessage(I.t("{cst}{bold}Update done."));
                         }
                     }
                 });

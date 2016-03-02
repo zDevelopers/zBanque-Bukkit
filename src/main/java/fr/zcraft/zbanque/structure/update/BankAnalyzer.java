@@ -104,8 +104,7 @@ public class BankAnalyzer implements Runnable
 
         for (int x = xMin; x <= xMax; x++)
         {
-            if (verbose)
-                requestedBy.sendMessage(I.t("{cst}{italic}Analyzing layer at x = {0} ", x));
+            verb(I.t("{cst}{italic}Analyzing layer at x = {0} ", x));
 
             for (int y = yMin; y <= yMax; y++)
             {
@@ -180,7 +179,7 @@ public class BankAnalyzer implements Runnable
 
                         if (ZBanque.get().isWebServiceEnabled())
                         {
-                            requestedBy.sendMessage(I.t("{cst}Sending data..."));
+                            requestedBy.sendMessage(I.t("{cst}Sending data... This may take some time."));
 
                             new PacketPlayOutSilos(bank)
                                 .addSuccessCallback(new Callback<JsonElement>()
@@ -403,7 +402,7 @@ public class BankAnalyzer implements Runnable
             if (isChest(candidate.getType()))
             {
                 final Location chestMainLocation = chestLocation.toLocation(world);
-                final Container newContainer = new Container(chestMainLocation, getOtherChestPart(chestMainLocation, candidate.getType()));
+                final Container newContainer = new Container(chestMainLocation, getOtherChestPart(chestMainLocation, candidate.getType()), true);
 
                 if (addIfNotExcluded(currentSilo, currentSilo, newContainer))
                 {

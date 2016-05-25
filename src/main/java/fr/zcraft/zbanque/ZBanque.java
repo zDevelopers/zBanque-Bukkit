@@ -88,6 +88,8 @@ public class ZBanque extends ZPlugin
                 StructureUpdateCommand.class
         );
 
+        Commands.registerShortcut("zbanque", ExploreCommand.class, "banque");
+
         AsyncAccess.update();
 
         BanksManager.get().registerBanksInConfig(getConfig().getConfigurationSection("banks"));

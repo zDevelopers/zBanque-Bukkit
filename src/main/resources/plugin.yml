@@ -10,7 +10,13 @@ commands:
     zbanque:
         description: "Manages the zBanque plugin"
         aliases:
-            - banque
+            - zbank
+    banque:
+        description: "See the bank structure (alias of /zbanque explore)."
+        aliases:
+            - banques
+            - bank
+            - banks
 
 
 # Permissions section generated using http://amaury.carrade.eu/tools/generators/bukkit/permissions.html

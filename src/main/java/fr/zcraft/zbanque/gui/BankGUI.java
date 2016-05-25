@@ -85,7 +85,7 @@ public class BankGUI extends ExplorerGui<Map.Entry<BlockType, Long>>
         Long amount = content.getValue();
 
         return GuiUtils.makeItem(
-                new ItemStack(type.getType(), Math.max(NumberUtils.long2int(amount / 1000), 1), type.getData()),
+                new ItemStack(type.getType(), Math.min(Math.max(NumberUtils.long2int(amount / 1000), 1), 64), type.getData()),
                 null,
                 Collections.singletonList(
                         I.tn("{white}{0}{gray} item stored", "{white}{0}{gray} items stored", NumberUtils.long2int(amount), amount)

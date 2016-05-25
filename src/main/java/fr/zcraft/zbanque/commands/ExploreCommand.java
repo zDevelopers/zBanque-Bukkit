@@ -32,6 +32,7 @@
 package fr.zcraft.zbanque.commands;
 
 import fr.zcraft.zbanque.Permissions;
+import fr.zcraft.zbanque.gui.BankGUI;
 import fr.zcraft.zbanque.gui.BanksGUI;
 import fr.zcraft.zbanque.structure.BanksManager;
 import fr.zcraft.zbanque.structure.containers.Bank;
@@ -59,7 +60,7 @@ public class ExploreCommand extends Command
         }
         else if (banks.size() == 1)
         {
-
+            Gui.open(playerSender(), new BankGUI(banks.get(0)));
         }
         else
         {

@@ -206,6 +206,12 @@ public class Bank
                     return -1 * reverse;
                 else if (one.getValue() > other.getValue())
                     return reverse;
+
+                // Very important, else TreeSet considers two items with comparison = 0 to be equals,
+                // and only one will be displayed
+                else if (!one.getKey().equals(other.getKey()))
+                    return reverse;
+
                 else
                     return 0;
             }

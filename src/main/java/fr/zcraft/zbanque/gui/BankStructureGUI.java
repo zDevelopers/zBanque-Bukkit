@@ -95,7 +95,7 @@ public class BankStructureGUI extends ExplorerGui<Silo>
         meta.setLore(lore);
         item.setItemMeta(meta);
 
-        item.setAmount(silo.getContainers().size());
+        item.setAmount(Math.min(silo.getContainers().size(), 64));
 
         return item;
     }

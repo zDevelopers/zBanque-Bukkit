@@ -482,9 +482,8 @@ public class BankAnalyzer implements Runnable
                 Location mainLoc = container.getMainLocation();
                 Location secLoc = container.getSecondaryLocation();
 
-                if (mainLoc.getBlockX() == x && mainLoc.getBlockY() == y && mainLoc.getBlockZ() == z)
-                    return silo;
-                else if (secLoc != null && secLoc.getBlockX() == x && secLoc.getBlockY() == y && secLoc.getBlockZ() == z)
+                if (mainLoc.getBlockX() == x && mainLoc.getBlockY() == y && mainLoc.getBlockZ() == z
+                        || secLoc != null && secLoc.getBlockX() == x && secLoc.getBlockY() == y && secLoc.getBlockZ() == z)
                     return silo;
             }
         }

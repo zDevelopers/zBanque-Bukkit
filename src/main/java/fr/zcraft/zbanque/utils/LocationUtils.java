@@ -102,11 +102,11 @@ public final class LocationUtils
 
     public static String userFriendlyLocation(Location location)
     {
-        return location.getWorld().getName() + " @ " + location.getX() + ";" + location.getY() + ";" + location.getZ();
+        return location.getWorld().getName() + " @ " + userFriendlyVector(location.toVector());
     }
 
     public static String userFriendlyVector(Vector vector)
     {
-        return vector.getX() + ";" + vector.getY() + ";" + vector.getZ();
+        return vector.getBlockX() + " ; " + vector.getBlockY() + " ; " + vector.getBlockZ();
     }
 }

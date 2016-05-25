@@ -46,20 +46,22 @@ public class BlockType
 
     /**
      * @param type The block type. Cannot be {@code null}.
-     * @param data The block data value. If -1, any data will match (wildcard data value) in {@link
-     *             #equals(Object) the equals method}.
+     * @param data The block data value. If -1, any data will match (wildcard
+     *             data value) in {@link #equals(Object) the equals method}.
      */
     public BlockType(Material type, short data)
     {
         Validate.notNull(type, "The block type cannot be null");
 
+        //PluginLogger.info("Durability " + (keepDurability(type) ? "kept" : "not kept") + " for {0}", type);
+
         this.type = type;
-        this.data = data;
+        this.data = keepDurability(type) ? data : (short) 0;
     }
 
     /**
-     * Data-wildcard constructor. Any data value will match in {@link #equals(Object) the equals
-     * method}.
+     * Data-wildcard constructor. Any data value will match in {@link
+     * #equals(Object) the equals method}.
      *
      * @param type The block type. Cannot be {@code null}.
      */
@@ -89,12 +91,94 @@ public class BlockType
     }
 
     /**
-     * @param data The block data value. If -1, any data will match (wildcard data value) in {@link
-     *             #equals(Object) the equals method}.
+     * @param data The block data value. If -1, any data will match (wildcard
+     *             data value) in {@link #equals(Object) the equals method}.
      */
     public void setData(short data)
     {
         this.data = data;
+    }
+
+
+    /**
+     * @param material Material
+     *
+     * @return {@code true} if the durability has to be kept while using this as
+     * a key to differentiate materials. As example, the durability is not kept
+     * for tools (where durability is the damages), maps...
+     */
+    private boolean keepDurability(Material material)
+    {
+        switch (material)
+        {
+            case WOOD_SWORD:
+            case WOOD_AXE:
+            case WOOD_HOE:
+            case WOOD_PICKAXE:
+            case WOOD_SPADE:
+
+            case STONE_SWORD:
+            case STONE_AXE:
+            case STONE_HOE:
+            case STONE_PICKAXE:
+            case STONE_SPADE:
+
+            case LEATHER_HELMET:
+            case LEATHER_CHESTPLATE:
+            case LEATHER_LEGGINGS:
+            case LEATHER_BOOTS:
+
+            case CHAINMAIL_HELMET:
+            case CHAINMAIL_CHESTPLATE:
+            case CHAINMAIL_LEGGINGS:
+            case CHAINMAIL_BOOTS:
+
+            case IRON_SWORD:
+            case IRON_AXE:
+            case IRON_HOE:
+            case IRON_PICKAXE:
+            case IRON_SPADE:
+            case IRON_BARDING:
+            case IRON_HELMET:
+            case IRON_CHESTPLATE:
+            case IRON_LEGGINGS:
+            case IRON_BOOTS:
+
+            case GOLD_SWORD:
+            case GOLD_AXE:
+            case GOLD_HOE:
+            case GOLD_PICKAXE:
+            case GOLD_SPADE:
+            case GOLD_BARDING:
+            case GOLD_HELMET:
+            case GOLD_CHESTPLATE:
+            case GOLD_LEGGINGS:
+            case GOLD_BOOTS:
+
+            case DIAMOND_SWORD:
+            case DIAMOND_AXE:
+            case DIAMOND_HOE:
+            case DIAMOND_PICKAXE:
+            case DIAMOND_SPADE:
+            case DIAMOND_BARDING:
+            case DIAMOND_HELMET:
+            case DIAMOND_CHESTPLATE:
+            case DIAMOND_LEGGINGS:
+            case DIAMOND_BOOTS:
+
+            case MAP:
+            case WRITTEN_BOOK:
+
+            case SHEARS:
+            case ELYTRA:
+            case FLINT_AND_STEEL:
+            case SHIELD:
+            case BOW:
+                return false;
+
+            default:
+                return true;
+        }
     }
 
 

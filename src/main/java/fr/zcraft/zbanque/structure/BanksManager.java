@@ -31,15 +31,13 @@
  */
 package fr.zcraft.zbanque.structure;
 
+import fr.zcraft.zbanque.Config;
 import fr.zcraft.zbanque.structure.containers.Bank;
-import fr.zcraft.zbanque.utils.LocationUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.PluginLogger;
 import fr.zcraft.zlib.tools.runners.RunAsyncTask;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -115,66 +113,33 @@ public class BanksManager
      *     </pre>
      * </p>
      *
-     * @param section The configuration section.
      */
-    public void registerBanksInConfig(ConfigurationSection section)
+    public void registerBanksFromConfig()
     {
-        if (section == null) return;
-
-        for (String bankCodeName : section.getKeys(false))
+        for (Map.Entry<String, Config.BankSection> entry : Config.BANKS.entrySet())
         {
-            if (section.isConfigurationSection(bankCodeName))
+            final String code = entry.getKey();
+            final Config.BankSection section = entry.getValue();
+
+            final String displayName = section.NAME.get();
+
+            final World world = section.WORLD.get();
+            final Vector firstCorner = section.FIRST_CORNER.get();
+            final Vector otherCorner = section.OTHER_CORNER.get();
+            final Vector center = section.CENTER.get();
+
+
+            if (!(displayName != null && world != null && firstCorner != null && otherCorner != null))
             {
-                ConfigurationSection bankConfig = section.getConfigurationSection(bankCodeName);
-
-                String name = bankConfig.getString("name");
-
-                String rawWorld = bankConfig.getString("world");
-                String rawCorner1 = bankConfig.getString("firstCorner");
-                String rawCorner2 = bankConfig.getString("otherCorner");
-                String rawCenter = bankConfig.getString("center");
-
-                Location corner1;
-                Location corner2;
-
-                Location center;
-
-                if (name == null || rawWorld == null || rawCorner1 == null || rawCorner2 == null)
-                {
-                    PluginLogger.warning(I.t("Invalid bank in config (code name: {0}), skipping.", bankCodeName));
-                    continue;
-                }
-
-                final World world = Bukkit.getWorld(rawWorld);
-                if (world == null)
-                {
-                    PluginLogger.error(I.t("Cannot load the {0} bank: the world {0} does not exists.", bankCodeName, rawWorld));
-                    continue;
-                }
-
-                try
-                {
-                    corner1 = LocationUtils.string2Location(world, rawCorner1);
-                    corner2 = LocationUtils.string2Location(world, rawCorner2);
-                }
-                catch (IllegalArgumentException e)
-                {
-                    PluginLogger.error(I.t("Cannot load the {0} bank corners: invalid corner coordinates. Error: {1}.", bankCodeName, e.getMessage()));
-                    continue;
-                }
-
-                try
-                {
-                    center = LocationUtils.string2Location(world, rawCenter);
-                }
-                catch (IllegalArgumentException | NullPointerException e)
-                {
-                    PluginLogger.warning("Cannot load the {0} bank center: blank or invalid coordinate. Using the center of the area. Error: {1}.", bankCodeName, e.getMessage());
-                    center = null;
-                }
-
-                registerBank(new Bank(bankCodeName, name, corner1, corner2, center));
+                PluginLogger.error(I.t("Cannot register the {0} bank: you must provide a name and the two corners.", code));
+                continue;
             }
+
+            registerBank(new Bank(
+                    code, displayName,
+                    firstCorner.toLocation(world), otherCorner.toLocation(world),
+                    center != null ? center.toLocation(world) : null
+            ));
         }
 
         RunAsyncTask.nextTick(new Runnable() {

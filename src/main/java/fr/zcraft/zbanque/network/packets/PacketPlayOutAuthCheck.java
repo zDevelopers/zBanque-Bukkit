@@ -88,8 +88,8 @@ public class PacketPlayOutAuthCheck extends PacketPlayOut
     public void onError(Throwable exception)
     {
         PluginLogger.error("Unable to check authentication permissions, are you sure the credentials are valid?");
-        PluginLogger.error("Username provided: {0}", Config.WEBSERVICE_USERNAME.get());
-        PluginLogger.error("The network operations will be disabled", exception, Config.WEBSERVICE_URL.get());
+        PluginLogger.error("Username provided: {0}", Config.WEBSERVICE.USERNAME.get());
+        PluginLogger.error("The network operations will be disabled", exception, Config.WEBSERVICE.URL.get());
 
         ZBanque.get().setWebServiceEnabled(false);
     }

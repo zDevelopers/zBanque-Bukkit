@@ -93,7 +93,7 @@ public class ZBanque extends ZPlugin
 
         AsyncAccess.update();
 
-        BanksManager.get().registerBanksInConfig(getConfig().getConfigurationSection("banks"));
+        BanksManager.get().registerBanksFromConfig();
 
         enableWebService();
     }
@@ -107,13 +107,13 @@ public class ZBanque extends ZPlugin
 
     private void enableWebService()
     {
-        if (!Config.WEBSERVICE_URL.isDefined() || Config.WEBSERVICE_URL.get().isEmpty())
+        if (!Config.WEBSERVICE.URL.isDefined() || Config.WEBSERVICE.URL.get().isEmpty())
         {
             PluginLogger.info("The webservice integration is disabled in the configuration.");
             setWebServiceEnabled(false);
             return;
         }
-        else if (!Config.WEBSERVICE_URL.get().toLowerCase().startsWith("http"))
+        else if (!Config.WEBSERVICE.URL.get().toLowerCase().startsWith("http"))
         {
             PluginLogger.error("Non-HTTP or HTTPS webservice URLs are currently not supported.");
             setWebServiceEnabled(false);

@@ -32,11 +32,35 @@
 package fr.zcraft.zbanque;
 
 import fr.zcraft.zlib.components.configuration.ConfigurationItem;
+import fr.zcraft.zlib.components.configuration.ConfigurationMap;
+import fr.zcraft.zlib.components.configuration.ConfigurationSection;
+import org.bukkit.World;
+import org.bukkit.util.Vector;
+
+import static fr.zcraft.zlib.components.configuration.ConfigurationItem.map;
+import static fr.zcraft.zlib.components.configuration.ConfigurationItem.section;
 
 
 public final class Config
 {
-    public final static ConfigurationItem<String> WEBSERVICE_URL = ConfigurationItem.item("webservice.url", "");
-    public final static ConfigurationItem<String> WEBSERVICE_USERNAME = ConfigurationItem.item("webservice.username", "");
-    public final static ConfigurationItem<String> WEBSERVICE_PASSWORD = ConfigurationItem.item("webservice.password", "");
+    public final static ConfigurationMap<String, BankSection> BANKS = map("banks", String.class, BankSection.class);
+
+    public final static class BankSection extends ConfigurationSection
+    {
+        public final ConfigurationItem<String> NAME = item("name", String.class);
+
+        public final ConfigurationItem<World> WORLD = item("world", World.class);
+        public final ConfigurationItem<Vector> FIRST_CORNER = item("firstCorner", Vector.class);
+        public final ConfigurationItem<Vector> OTHER_CORNER = item("otherCorner", Vector.class);
+
+        public final ConfigurationItem<Vector> CENTER = item("center", Vector.class);
+    }
+
+    public final static WebserviceSection WEBSERVICE = section("webservice", WebserviceSection.class);
+    public final static class WebserviceSection extends ConfigurationSection
+    {
+        public final ConfigurationItem<String> URL = item("url", "");
+        public final ConfigurationItem<String> USERNAME = item("username", "");
+        public final ConfigurationItem<String> PASSWORD = item("password", "");
+    }
 }

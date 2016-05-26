@@ -141,7 +141,7 @@ public class PacketSender extends Worker
                 if (!ZBanque.get().isWebServiceEnabled())
                     return null;
 
-                final String url = Config.WEBSERVICE_URL.get() + packet.getEndpoint();
+                final String url = Config.WEBSERVICE.URL.get() + packet.getEndpoint();
                 final String data = packet.getData() == null ? null : packet.getData().toString();
 
                 final HTTPResponse response = makeRequest(url, packet.getPacketType(), data);
@@ -289,8 +289,8 @@ public class PacketSender extends Worker
 
     private static void authenticateRequest(HttpURLConnection connection)
     {
-        String user = Config.WEBSERVICE_USERNAME.get();
-        String pass = Config.WEBSERVICE_PASSWORD.get();
+        String user = Config.WEBSERVICE.USERNAME.get();
+        String pass = Config.WEBSERVICE.PASSWORD.get();
 
         if (user == null || user.isEmpty())
             return;

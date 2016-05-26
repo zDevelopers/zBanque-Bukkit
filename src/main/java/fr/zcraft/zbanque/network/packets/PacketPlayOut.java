@@ -177,7 +177,7 @@ public abstract class PacketPlayOut
      */
     public void send()
     {
-        if (!Config.WEBSERVICE_URL.isDefined() || Config.WEBSERVICE_URL.get().isEmpty())
+        if (!Config.WEBSERVICE.URL.isDefined() || Config.WEBSERVICE.URL.get().isEmpty())
             return;
 
         if (getEndpoint() == null)

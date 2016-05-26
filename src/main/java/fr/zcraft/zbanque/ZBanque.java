@@ -41,6 +41,7 @@ import fr.zcraft.zbanque.network.PacketSender;
 import fr.zcraft.zbanque.network.packets.PacketPlayOutAuthCheck;
 import fr.zcraft.zbanque.network.packets.PacketPlayOutPing;
 import fr.zcraft.zbanque.structure.BanksManager;
+import fr.zcraft.zbanque.structure.update.BankContentLiveUpdater;
 import fr.zcraft.zbanque.utils.AsyncAccess;
 import fr.zcraft.zlib.components.commands.Commands;
 import fr.zcraft.zlib.components.configuration.Configuration;
@@ -71,7 +72,7 @@ public class ZBanque extends ZPlugin
     {
         INSTANCE = this;
 
-        loadComponents(I18n.class, Commands.class, Gui.class, PacketSender.class);
+        loadComponents(I18n.class, Commands.class, Gui.class, PacketSender.class, BankContentLiveUpdater.class);
 
         I18n.useDefaultPrimaryLocale();
         I18n.setFallbackLocale(Locale.US);

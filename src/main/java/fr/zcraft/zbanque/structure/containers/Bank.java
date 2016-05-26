@@ -38,6 +38,8 @@ import fr.zcraft.zbanque.ZBanque;
 import fr.zcraft.zbanque.json.ContainerTypeAdapter;
 import fr.zcraft.zbanque.json.LocationTypeAdapter;
 import fr.zcraft.zbanque.structure.update.BankAreaCollector;
+import fr.zcraft.zbanque.utils.LocationUtils;
+import fr.zcraft.zbanque.utils.Pair;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.PluginLogger;
 import fr.zcraft.zlib.tools.runners.RunTask;
@@ -163,6 +165,44 @@ public class Bank
     public Set<Silo> getSilos()
     {
         return Collections.unmodifiableSet(silos);
+    }
+
+    /**
+     * Check if a location is inside this bank.
+     *
+     * @param location The location
+     * @return {@code true} if inside.
+     */
+    public boolean isInside(Location location)
+    {
+        return location.getWorld().equals(highestCorner.getWorld())
+                && location.getX() > lowestCorner.getX()
+                && location.getY() > lowestCorner.getY()
+                && location.getZ() > lowestCorner.getZ()
+                && location.getX() < highestCorner.getX()
+                && location.getY() < highestCorner.getY()
+                && location.getZ() < highestCorner.getZ();
+    }
+
+    /**
+     * Returns the silo and container if a container at this position is found;
+     * null else.
+     *
+     * @param location The location.
+     *
+     * @return The {@link Silo} and {@link Container} if found; {@code null} else.
+     */
+    public Pair<Silo, Container> getContainer(final Location location)
+    {
+        final Location blockLocation = LocationUtils.cloneLocationToBlock(location);
+
+        for (Silo silo : silos)
+            for (Container container : silo.getContainers())
+                if (container.getMainLocation().distanceSquared(blockLocation) < 0.2
+                        || container.getSecondaryLocation() != null && container.getSecondaryLocation().distanceSquared(blockLocation) < 0.2)
+                    return new Pair<>(silo, container);
+
+        return null;
     }
 
     /**

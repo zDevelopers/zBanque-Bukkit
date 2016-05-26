@@ -188,7 +188,7 @@ public class Container
      * @throws IllegalStateException if the chest is no longer a chest or
      *                               hopper.
      */
-    public void update()
+    public void update() throws IllegalStateException
     {
         try
         {

@@ -206,6 +206,19 @@ public class Bank
     }
 
     /**
+     * Returns the silo if a container at this position is found; null else.
+     *
+     * @param location The location.
+     *
+     * @return The {@link Silo} if found; {@code null} else.
+     */
+    public Silo getSilo(final Location location)
+    {
+        final Pair<Silo, Container> siloContainer = getContainer(location);
+        return siloContainer == null ? null : siloContainer.getLeft();
+    }
+
+    /**
      * @return The content of the bank: a map associating a {@link BlockType}
      * with the amount of items of this type in the bank.
      */

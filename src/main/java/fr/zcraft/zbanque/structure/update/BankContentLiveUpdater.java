@@ -34,10 +34,8 @@ package fr.zcraft.zbanque.structure.update;
 import fr.zcraft.zbanque.network.packets.PacketPlayOutSilos;
 import fr.zcraft.zbanque.structure.BanksManager;
 import fr.zcraft.zbanque.structure.containers.Bank;
-import fr.zcraft.zbanque.structure.containers.Container;
 import fr.zcraft.zbanque.structure.containers.Silo;
 import fr.zcraft.zbanque.utils.LocationUtils;
-import fr.zcraft.zbanque.utils.Pair;
 import fr.zcraft.zlib.core.ZLibComponent;
 import fr.zcraft.zlib.tools.PluginLogger;
 import fr.zcraft.zlib.tools.runners.RunTask;
@@ -49,6 +47,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -69,7 +68,7 @@ public class BankContentLiveUpdater extends ZLibComponent implements Listener
      */
     private boolean inBank(final Inventory inventory)
     {
-        if (inventory.getLocation() == null) return false;
+        if (inventory.getLocation() == null || inventory instanceof PlayerInventory) return false;
 
         for (Bank bank : BanksManager.get().getBanks())
             if (bank.isInside(inventory.getLocation()))
@@ -78,47 +77,17 @@ public class BankContentLiveUpdater extends ZLibComponent implements Listener
         return false;
     }
 
-    /**
-     * Returns if the given event affects the GUI's inventory.
-     *
-     * @param ev The event to test
-     *
-     * @return {@code true} if the event's slot is in the GUI's inventory,
-     * {@code false} otherwise.
-     */
-    private boolean affectsOtherInventory(final InventoryClickEvent ev)
-    {
-        return ev.getRawSlot() < ev.getInventory().getSize();
-    }
-
-    /**
-     * Returns if the given event affects the GUI's inventory.
-     *
-     * @param ev The event to test
-     *
-     * @return true if any of the event's slots is in the GUI's inventory, false
-     * otherwise.
-     */
-    private boolean affectsOtherInventory(final InventoryDragEvent ev)
-    {
-        for (int slot : ev.getRawSlots())
-            if (slot < ev.getInventory().getSize())
-                return true;
-
-        return false;
-    }
-
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onInventoryDrag(final InventoryDragEvent ev)
     {
-        if (affectsOtherInventory(ev) && inBank(ev.getInventory()))
+        if (inBank(ev.getInventory()))
             updatedContainers.add(ev.getInventory().getLocation());
     }
 
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onInventoryClick(final InventoryClickEvent ev)
     {
-        if (affectsOtherInventory(ev) && inBank(ev.getInventory()))
+        if (inBank(ev.getInventory()))
             updatedContainers.add(ev.getInventory().getLocation());
     }
 
@@ -161,18 +130,18 @@ public class BankContentLiveUpdater extends ZLibComponent implements Listener
     private void updateLocation(final Location location)
     {
         Bank bank = null;
-        Pair<Silo, Container> siloContainer = null;
+        Silo silo = null;
 
         for (Bank bankSearch : BanksManager.get().getBanks())
         {
-            if ((siloContainer = bankSearch.getContainer(location)) != null)
+            if ((silo = bankSearch.getSilo(location)) != null)
             {
                 bank = bankSearch;
                 break;
             }
         }
 
-        if (siloContainer == null)
+        if (silo == null)
         {
             PluginLogger.warning("Cannot find a silo for a container inside a bank area at {0}, is the bank structure updated?", LocationUtils.userFriendlyLocation(location));
             return;
@@ -180,7 +149,7 @@ public class BankContentLiveUpdater extends ZLibComponent implements Listener
 
 
         final Bank finalBank = bank;
-        final Pair<Silo, Container> finalSiloContainer = siloContainer;
+        final Silo finalSilo = silo;
 
         RunTask.nextTick(new Runnable()
         {
@@ -189,13 +158,13 @@ public class BankContentLiveUpdater extends ZLibComponent implements Listener
             {
                 try
                 {
-                    finalSiloContainer.getRight().update();
+                    finalSilo.update();
 
-                    new PacketPlayOutSilos(finalBank, finalSiloContainer.getLeft()).send();
+                    new PacketPlayOutSilos(finalBank, finalSilo).send();
                 }
                 catch (IllegalStateException e)
                 {
-                    PluginLogger.error("The container at {0} is no longer valid, is the bank structure updated?", LocationUtils.userFriendlyLocation(location));
+                    PluginLogger.error("A container in the silo at {0} is no longer valid, is the bank structure updated?", LocationUtils.userFriendlyLocation(location));
                 }
             }
         });

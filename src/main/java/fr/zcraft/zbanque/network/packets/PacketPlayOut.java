@@ -33,6 +33,7 @@ package fr.zcraft.zbanque.network.packets;
 
 import com.google.gson.JsonElement;
 import fr.zcraft.zbanque.Config;
+import fr.zcraft.zbanque.ZBanque;
 import fr.zcraft.zbanque.network.PacketSender;
 import fr.zcraft.zbanque.network.HTTPResponse;
 import fr.zcraft.zlib.tools.Callback;
@@ -177,7 +178,7 @@ public abstract class PacketPlayOut
      */
     public void send()
     {
-        if (!Config.WEBSERVICE.URL.isDefined() || Config.WEBSERVICE.URL.get().isEmpty())
+        if (!ZBanque.get().isWebServiceEnabled() || !Config.WEBSERVICE.URL.isDefined() || Config.WEBSERVICE.URL.get().isEmpty())
             return;
 
         if (getEndpoint() == null)

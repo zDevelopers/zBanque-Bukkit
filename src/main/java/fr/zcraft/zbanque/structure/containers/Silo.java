@@ -111,6 +111,17 @@ public class Silo
     }
 
     /**
+     * Updates all the containers in this silo.
+     *
+     * <p>This should be called from the main thread.</p>
+     */
+    public void update()
+    {
+        for (Container container : containers)
+            container.update();
+    }
+
+    /**
      * Retrieves the block type mainly found in this silo.
      *
      * Warning: the content is re-scanned each time, not cached.

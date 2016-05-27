@@ -31,14 +31,17 @@
  */
 package fr.zcraft.zbanque;
 
+import fr.zcraft.zbanque.structure.containers.BlockType;
+import fr.zcraft.zbanque.structure.items_groups.ItemsGroup;
 import fr.zcraft.zlib.components.configuration.ConfigurationItem;
+import fr.zcraft.zlib.components.configuration.ConfigurationList;
 import fr.zcraft.zlib.components.configuration.ConfigurationMap;
 import fr.zcraft.zlib.components.configuration.ConfigurationSection;
+import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
-import static fr.zcraft.zlib.components.configuration.ConfigurationItem.map;
-import static fr.zcraft.zlib.components.configuration.ConfigurationItem.section;
+import static fr.zcraft.zlib.components.configuration.ConfigurationItem.*;
 
 
 public final class Config
@@ -56,11 +59,21 @@ public final class Config
         public final ConfigurationItem<Vector> CENTER = item("center", Vector.class);
     }
 
+    public final static ConfigurationList<ItemsGroup> GROUPS = list("groups", ItemsGroup.class);
+
     public final static WebserviceSection WEBSERVICE = section("webservice", WebserviceSection.class);
+
     public final static class WebserviceSection extends ConfigurationSection
     {
         public final ConfigurationItem<String> URL = item("url", "");
         public final ConfigurationItem<String> USERNAME = item("username", "");
         public final ConfigurationItem<String> PASSWORD = item("password", "");
+    }
+
+
+    static
+    {
+        ConfigurationValueHandlers.registerHandlers(ItemsGroup.class);
+        ConfigurationValueHandlers.registerHandlers(BlockType.class);
     }
 }

@@ -34,6 +34,7 @@ package fr.zcraft.zbanque;
 import com.google.gson.JsonElement;
 import fr.zcraft.zbanque.commands.ContentViewCommand;
 import fr.zcraft.zbanque.commands.ExploreCommand;
+import fr.zcraft.zbanque.commands.ItemsGroupsCommand;
 import fr.zcraft.zbanque.commands.ListBanksCommand;
 import fr.zcraft.zbanque.commands.StructureUpdateCommand;
 import fr.zcraft.zbanque.commands.StructureViewCommand;
@@ -41,6 +42,7 @@ import fr.zcraft.zbanque.network.PacketSender;
 import fr.zcraft.zbanque.network.packets.PacketPlayOutAuthCheck;
 import fr.zcraft.zbanque.network.packets.PacketPlayOutPing;
 import fr.zcraft.zbanque.structure.BanksManager;
+import fr.zcraft.zbanque.structure.items_groups.ItemsGroupManager;
 import fr.zcraft.zbanque.structure.update.BankContentLiveUpdater;
 import fr.zcraft.zbanque.utils.AsyncAccess;
 import fr.zcraft.zlib.components.commands.Commands;
@@ -72,7 +74,10 @@ public class ZBanque extends ZPlugin
     {
         INSTANCE = this;
 
-        loadComponents(I18n.class, Commands.class, Gui.class, PacketSender.class, BankContentLiveUpdater.class);
+        loadComponents(
+                I18n.class, Commands.class, Gui.class, PacketSender.class, AsyncAccess.class,
+                BanksManager.class, BankContentLiveUpdater.class, ItemsGroupManager.class
+        );
 
         I18n.useDefaultPrimaryLocale();
         I18n.setFallbackLocale(Locale.US);
@@ -86,14 +91,11 @@ public class ZBanque extends ZPlugin
                 ListBanksCommand.class,
                 ContentViewCommand.class,
                 StructureViewCommand.class,
-                StructureUpdateCommand.class
+                StructureUpdateCommand.class,
+                ItemsGroupsCommand.class
         );
 
         Commands.registerShortcut("zbanque", ExploreCommand.class, "banque");
-
-        AsyncAccess.update();
-
-        BanksManager.get().registerBanksFromConfig();
 
         enableWebService();
     }

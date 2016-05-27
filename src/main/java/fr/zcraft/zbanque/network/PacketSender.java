@@ -67,6 +67,8 @@ public class PacketSender extends Worker
      */
     public static void sendPacket(final PacketPlayOut packet)
     {
+        if (packet == null) return;
+
         sendPacket(packet, new WorkerCallback<JsonElement>() {
             @Override
             public void finished(JsonElement result)

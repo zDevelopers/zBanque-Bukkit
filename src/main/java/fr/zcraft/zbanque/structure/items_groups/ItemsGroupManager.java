@@ -29,51 +29,72 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque.utils;
+package fr.zcraft.zbanque.structure.items_groups;
 
+import fr.zcraft.zbanque.Config;
+import fr.zcraft.zbanque.structure.containers.Bank;
+import fr.zcraft.zbanque.structure.containers.BlockType;
+import fr.zcraft.zbanque.utils.Pair;
 import fr.zcraft.zlib.core.ZLibComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
-public final class AsyncAccess extends ZLibComponent
+public class ItemsGroupManager extends ZLibComponent
 {
-    private static Map<String, World> worlds = new ConcurrentHashMap<>();
+    private static ItemsGroupManager INSTANCE;
+
+    private List<ItemsGroup> itemGroups = new ArrayList<>();
 
     @Override
     protected void onEnable()
     {
-        initWorlds();
+        INSTANCE = this;
+
+        registerGroupsFromConfig();
     }
 
-    public static void update()
+    public static ItemsGroupManager get()
     {
-        initWorlds();
+        return INSTANCE;
     }
 
-    private static void initWorlds()
+    public void registerGroup(ItemsGroup group)
     {
-        worlds.clear();
+        itemGroups.add(group);
+    }
 
-        for (World world : Bukkit.getWorlds())
-            worlds.put(world.getName(), world);
+    public List<ItemsGroup> registeredGroups()
+    {
+        return Collections.unmodifiableList(itemGroups);
+    }
+
+    private void registerGroupsFromConfig()
+    {
+        for (ItemsGroup group : Config.GROUPS)
+            registerGroup(group);
     }
 
 
-    public static World getWorld(String world)
+    public Map<ItemsGroup, Pair<Long, Map<BlockType, Long>>> getGlobalAmounts(Bank bank)
     {
-        return worlds.get(world);
+        return getGlobalAmounts(Collections.singletonList(bank));
     }
 
-    public static List<World> getWorlds()
+    public Map<ItemsGroup, Pair<Long, Map<BlockType, Long>>> getGlobalAmounts(List<Bank> banks)
     {
-        List<World> worldsList = new ArrayList<>();
-        worldsList.addAll(worlds.values());
-        return worldsList;
+        // LinkedHashMap to keep the insertion order so the config order is kept in the UIs.
+        Map<ItemsGroup, Pair<Long, Map<BlockType, Long>>> groupsWithAmounts = new LinkedHashMap<>();
+
+        for (ItemsGroup group : itemGroups)
+        {
+            groupsWithAmounts.put(group, group.getAmounts(banks));
+        }
+
+        return groupsWithAmounts;
     }
 }

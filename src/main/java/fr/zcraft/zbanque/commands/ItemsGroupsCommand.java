@@ -29,51 +29,54 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque.utils;
+package fr.zcraft.zbanque.commands;
 
-import fr.zcraft.zlib.core.ZLibComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
+import fr.zcraft.zbanque.Permissions;
+import fr.zcraft.zbanque.structure.BanksManager;
+import fr.zcraft.zbanque.structure.containers.BlockType;
+import fr.zcraft.zbanque.structure.items_groups.ItemsGroup;
+import fr.zcraft.zbanque.structure.items_groups.ItemsGroupManager;
+import fr.zcraft.zbanque.utils.Pair;
+import fr.zcraft.zlib.components.commands.Command;
+import fr.zcraft.zlib.components.commands.CommandException;
+import fr.zcraft.zlib.components.commands.CommandInfo;
+import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.components.rawtext.RawText;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
-public final class AsyncAccess extends ZLibComponent
+@CommandInfo (name = "groups")
+public class ItemsGroupsCommand extends Command
 {
-    private static Map<String, World> worlds = new ConcurrentHashMap<>();
+    @Override
+    protected void run() throws CommandException
+    {
+        info(I.t("{blue}{bold}Grouped items"));
+
+        for (Map.Entry<ItemsGroup, Pair<Long, Map<BlockType, Long>>> entry : ItemsGroupManager.get().getGlobalAmounts(BanksManager.get().getBanks()).entrySet())
+        {
+            send(new RawText("- ")
+                        .then(entry.getValue().getLeft().toString())
+                            .color(ChatColor.GREEN)
+
+                        .then(" × ")
+                            .color(ChatColor.DARK_GREEN)
+
+                        .then(entry.getKey().getTitle())
+                            .color(ChatColor.GREEN)
+                            .hover(ItemsGroup.asRepresentingItem(entry))
+
+                    .build()
+            );
+        }
+    }
 
     @Override
-    protected void onEnable()
+    public boolean canExecute(CommandSender sender)
     {
-        initWorlds();
-    }
-
-    public static void update()
-    {
-        initWorlds();
-    }
-
-    private static void initWorlds()
-    {
-        worlds.clear();
-
-        for (World world : Bukkit.getWorlds())
-            worlds.put(world.getName(), world);
-    }
-
-
-    public static World getWorld(String world)
-    {
-        return worlds.get(world);
-    }
-
-    public static List<World> getWorlds()
-    {
-        List<World> worldsList = new ArrayList<>();
-        worldsList.addAll(worlds.values());
-        return worldsList;
+        return Permissions.SEE_ITEMS_GROUPS.isGrantedTo(sender);
     }
 }

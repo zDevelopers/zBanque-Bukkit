@@ -31,13 +31,16 @@
  */
 package fr.zcraft.zbanque.gui;
 
+import fr.zcraft.zbanque.Permissions;
 import fr.zcraft.zbanque.structure.containers.Bank;
 import fr.zcraft.zbanque.utils.NumberUtils;
 import fr.zcraft.zlib.components.gui.ExplorerGui;
 import fr.zcraft.zlib.components.gui.Gui;
+import fr.zcraft.zlib.components.gui.GuiAction;
 import fr.zcraft.zlib.components.gui.GuiUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.items.GlowEffect;
+import fr.zcraft.zlib.tools.items.ItemStackBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -61,6 +64,13 @@ public class BanksGUI extends ExplorerGui<Bank>
 
         setMode(Mode.READONLY);
         setKeepHorizontalScrollingSpace(true);
+
+        if (Permissions.SEE_ITEMS_GROUPS.isGrantedTo(getPlayer()))
+        {
+            action("items_groups", getSize() - 5, new ItemStackBuilder(Material.BOOK)
+                    .title(I.t("{green}Grouped stocks overview"))
+            );
+        }
     }
 
     @Override
@@ -98,5 +108,11 @@ public class BanksGUI extends ExplorerGui<Bank>
     protected void onRightClick(Bank bank)
     {
         Gui.open(getPlayer(), new BankGUI(bank), this);
+    }
+
+    @GuiAction ("items_groups")
+    protected void groups()
+    {
+        Gui.open(getPlayer(), new ItemsGroupsGUI(banks), this);
     }
 }

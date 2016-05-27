@@ -34,6 +34,7 @@ package fr.zcraft.zbanque.structure;
 import fr.zcraft.zbanque.Config;
 import fr.zcraft.zbanque.structure.containers.Bank;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.core.ZLibComponent;
 import fr.zcraft.zlib.tools.PluginLogger;
 import fr.zcraft.zlib.tools.runners.RunAsyncTask;
 import org.bukkit.World;
@@ -46,9 +47,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class BanksManager
+public class BanksManager extends ZLibComponent
 {
-    private static BanksManager INSTANCE = new BanksManager();
+    private static BanksManager INSTANCE;
 
     private Map<String, Bank> banks = new ConcurrentHashMap<>();
 
@@ -58,7 +59,14 @@ public class BanksManager
         return INSTANCE;
     }
 
-    private BanksManager() {}
+
+    @Override
+    protected void onEnable()
+    {
+        INSTANCE = this;
+
+        registerBanksFromConfig();
+    }
 
 
     /**
@@ -114,7 +122,7 @@ public class BanksManager
      * </p>
      *
      */
-    public void registerBanksFromConfig()
+    private void registerBanksFromConfig()
     {
         for (Map.Entry<String, Config.BankSection> entry : Config.BANKS.entrySet())
         {

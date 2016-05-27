@@ -40,7 +40,8 @@ public enum Permissions
     SEE_CONTENT("zbanque.see-content"),
     TP_TO_CHEST("zbanque.tp-to-chest"),
     SEE_STRUCTURE("zbanque.see-structure"),
-    UPDATE_STRUCTURE("zbanque.update-structure");
+    UPDATE_STRUCTURE("zbanque.update-structure"),
+    SEE_ITEMS_GROUPS("zbanque.see_items_groups");
 
 
     private final String permission;

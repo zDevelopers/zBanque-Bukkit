@@ -31,6 +31,10 @@
  */
 package fr.zcraft.zbanque.structure.containers;
 
+import fr.zcraft.zlib.components.configuration.ConfigurationParseException;
+import fr.zcraft.zlib.components.configuration.ConfigurationValueHandler;
+import fr.zcraft.zlib.components.configuration.ConfigurationValueHandlers;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -52,8 +56,6 @@ public class BlockType
     public BlockType(Material type, short data)
     {
         Validate.notNull(type, "The block type cannot be null");
-
-        //PluginLogger.info("Durability " + (keepDurability(type) ? "kept" : "not kept") + " for {0}", type);
 
         this.type = type;
         this.data = keepDurability(type) ? data : (short) 0;
@@ -188,6 +190,11 @@ public class BlockType
         return type.name() + ":" + data;
     }
 
+    public String toUserString()
+    {
+        return type.name().replace("_", " ") + (data > 0 ? ":" + data : "");
+    }
+
     @Override
     public boolean equals(Object o)
     {
@@ -202,6 +209,28 @@ public class BlockType
     @Override
     public int hashCode()
     {
-        return 31 * type.hashCode() + (int) data;
+        return 31 * type.hashCode();
+    }
+
+
+    @ConfigurationValueHandler
+    public static BlockType handleBlockType(Object object) throws ConfigurationParseException
+    {
+        try
+        {
+            return new BlockType(ConfigurationValueHandlers.handleEnumValue(object, Material.class));
+        }
+        catch (ConfigurationParseException e)
+        {
+            String[] parts = object.toString().trim().split("_");
+
+            String name = StringUtils.join(parts, "_", 0, parts.length - 1);
+            short data;
+
+            try { data = Short.parseShort(parts[parts.length - 1]); }
+            catch (NumberFormatException nfe) { throw new ConfigurationParseException("Invalid block type, must be a Material or Material_DATAVALUE", object); }
+
+            return new BlockType(ConfigurationValueHandlers.handleEnumValue(name, Material.class), data);
+        }
     }
 }

@@ -29,51 +29,56 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-package fr.zcraft.zbanque.utils;
+package fr.zcraft.zbanque.gui;
 
-import fr.zcraft.zlib.core.ZLibComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
+import fr.zcraft.zbanque.structure.BanksManager;
+import fr.zcraft.zbanque.structure.containers.Bank;
+import fr.zcraft.zbanque.structure.containers.BlockType;
+import fr.zcraft.zbanque.structure.items_groups.ItemsGroup;
+import fr.zcraft.zbanque.structure.items_groups.ItemsGroupManager;
+import fr.zcraft.zbanque.utils.Pair;
+import fr.zcraft.zlib.components.gui.ExplorerGui;
+import fr.zcraft.zlib.components.gui.GuiAction;
+import fr.zcraft.zlib.components.i18n.I;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Set;
 
 
-public final class AsyncAccess extends ZLibComponent
+public class ItemsGroupsGUI extends ExplorerGui<Map.Entry<ItemsGroup, Pair<Long, Map<BlockType, Long>>>>
 {
-    private static Map<String, World> worlds = new ConcurrentHashMap<>();
+    private final List<Bank> banks;
+
+    public ItemsGroupsGUI(List<Bank> banks)
+    {
+        this.banks = banks;
+    }
 
     @Override
-    protected void onEnable()
+    protected void onUpdate()
     {
-        initWorlds();
+        final Set<Map.Entry<ItemsGroup, Pair<Long, Map<BlockType, Long>>>> entries = ItemsGroupManager.get().getGlobalAmounts(BanksManager.get().getBanks()).entrySet();
+
+        setTitle(I.t("{black}Grouped stocks overview"));
+        setMode(Mode.READONLY);
+        setData(entries.toArray(new Map.Entry[entries.size()]));
+        setKeepHorizontalScrollingSpace(true);
+
+        action("back", getSize() - 5, Material.EMERALD, I.t("{green}Go back"));
     }
 
-    public static void update()
+    @Override
+    protected ItemStack getViewItem(Map.Entry<ItemsGroup, Pair<Long, Map<BlockType, Long>>> data)
     {
-        initWorlds();
+        return ItemsGroup.asRepresentingItem(data);
     }
 
-    private static void initWorlds()
+    @GuiAction ("back")
+    protected void back()
     {
-        worlds.clear();
-
-        for (World world : Bukkit.getWorlds())
-            worlds.put(world.getName(), world);
-    }
-
-
-    public static World getWorld(String world)
-    {
-        return worlds.get(world);
-    }
-
-    public static List<World> getWorlds()
-    {
-        List<World> worldsList = new ArrayList<>();
-        worldsList.addAll(worlds.values());
-        return worldsList;
+        close();
     }
 }

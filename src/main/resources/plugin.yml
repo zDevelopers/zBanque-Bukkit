@@ -9,14 +9,10 @@ author: Amaury Carrade
 commands:
     zbanque:
         description: "Manages the zBanque plugin"
-        aliases:
-            - zbank
     banque:
         description: "See the bank structure (alias of /zbanque explore)."
         aliases:
             - banques
-            - bank
-            - banks
 
 
 # Permissions section generated using http://amaury.carrade.eu/tools/generators/bukkit/permissions.html
@@ -25,6 +21,7 @@ permissions:
         description: "Gives all the zBank permissions"
         default: op
         children:
+            zbanque.see_items_groups: true
             zbanque.update-structure: true
             zbanque.see-structure: true
             zbanque.see-content: true
@@ -48,4 +45,8 @@ permissions:
 
     zbanque.explore:
         description: "Allows to see the bank content through the GUI via /zbanque explore"
+        default: true
+
+    zbanque.see_items_groups:
+        description: "Allows to see the item groups in a GUI"
         default: true

@@ -12,8 +12,8 @@
 #
 #         # The bank's location.
 #         world: "world"
-#         firstCorner: "-10;0;-10"
-#         otherCorner: "10;60;10"
+#         firstCorner: "-10,0,-10"
+#         otherCorner: "10,60,10"
 #
 #        # The bank's center. If blank, the center of the area is used.
 #        center: ""
@@ -24,8 +24,8 @@
 #
 #         # The bank's location.
 #         world: "world"
-#         firstCorner: "-100;0;-100"
-#         otherCorner: "-60;120;-30"
+#         firstCorner: "-100,0,-100"
+#         otherCorner: "-60,120,-30"
 #
 #        # The bank's center. If blank, the center of the area is used.
 #        center: ""
@@ -41,6 +41,117 @@ banks:
 
         # The bank's center. If blank, the center of the area is used.
         center: ""
+
+
+# Item groups allows you to display in a separate UI grouped items.
+# It allows a better global view of the stored amount of resources in your
+# banks.
+# As example, you can display a total of 21 for 1 block of iron and 12 ingots.
+groups:
+    - name: "Stone"
+      icon: STONE
+      relative_amounts:
+          STONE: 1
+          COBBLESTONE: 1
+
+    - name: "Iron"
+      icon: IRON_INGOT
+      relative_amounts:
+          IRON_ORE: 1
+          IRON_INGOT: 1
+          IRON_BLOCK: 9
+
+    - name: "Diamonds"
+      icon: DIAMOND
+      relative_amounts:
+          DIAMOND_ORE: 1
+          DIAMOND: 1
+          DIAMOND_BLOCK: 9
+
+    - name: "Gold"
+      icon: GOLD_INGOT
+      relative_amounts:
+          GOLD_NUGGET: 0.111
+          GOLD_ORE: 1
+          GOLD_INGOT: 1
+          GOLD_BLOCK: 9
+
+    - name: "Coal"
+      icon: COAL
+      relative_amounts:
+          COAL_ORE: 1
+          COAL: 1
+          COAL_BLOCK: 9
+
+    - name: "Quartz"
+      icon: QUARTZ
+      relative_amounts:
+          QUARTZ_ORE: 1
+          QUARTZ: 1
+          QUARTZ_BLOCK_0: 4
+
+    - name: "Lapis Lazuli"
+      icon: INK_SACK_4
+      relative_amounts:
+          LAPIS_ORE: 6
+          INK_SACK_4: 1
+          LAPIS_BLOCK: 9
+
+    - name: "Emerald"
+      icon: EMERALD
+      relative_amounts:
+          EMERALD_ORE: 1
+          EMERALD: 1
+          EMERALD_BLOCK: 9
+
+    - name: "Redstone"
+      icon: REDSTONE
+      relative_amounts:
+          REDSTONE_ORE: 1
+          REDSTONE: 1
+          REDSTONE_BLOCK: 9
+
+    - name: "Glowstone"
+      icon: GLOWSTONE_DUST
+      relative_amounts:
+          GLOWSTONE_DUST: 1
+          GLOWSTONE: 9
+
+    - name: "Slime"
+      icon: SLIME_BLOCK
+      relative_amounts:
+          SLIME_BALL: 1
+          SLIME_BLOCK: 9
+
+    - name: "Snow"
+      icon: SNOW_BALL
+      relative_amounts:
+          SNOW_BALL: 1
+          SNOW_BLOCK: 4
+
+    - name: "Paper"
+      icon: PAPER
+      relative_amounts:
+          PAPER: 1
+          SUGAR_CANE: 1
+
+    - name: "Rails"
+      icon: RAILS
+      relative_amounts:
+          RAILS: 1
+          ACTIVATOR_RAIL: 1
+          POWERED_RAIL: 1
+          DETECTOR_RAIL: 1
+
+    - name: "Minecarts"
+      icon: MINECART
+      relative_amounts:
+          MINECART: 1
+          STORAGE_MINECART: 1
+          POWERED_MINECART: 1
+          EXPLOSIVE_MINECART: 1
+          HOPPER_MINECART: 1
+          COMMAND_MINECART: 1
 
 
 webservice:

@@ -31,7 +31,11 @@
  */
 package fr.zcraft.zbanque.structure.containers;
 
+import fr.zcraft.zbanque.gui.BankGUI;
+import fr.zcraft.zbanque.gui.BanksGUI;
+import fr.zcraft.zbanque.gui.ItemsGroupsGUI;
 import fr.zcraft.zbanque.utils.LocationUtils;
+import fr.zcraft.zlib.components.gui.Gui;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -190,6 +194,21 @@ public class Container
      */
     public void update() throws IllegalStateException
     {
+        update(true);
+    }
+
+    /**
+     * Reads the chest content and updates the stored content.
+     *
+     * <p>Must be called from the Bukkit main thread.</p>
+     *
+     * @param updateGUIs {@code true} to live-update the GUIs.
+     *
+     * @throws IllegalStateException if the chest is no longer a chest or
+     *                               hopper.
+     */
+    public void update(boolean updateGUIs) throws IllegalStateException
+    {
         try
         {
             Validate.isTrue(isValidContainerLocation(mainLocation), "Invalid main container location");
@@ -217,6 +236,13 @@ public class Container
                 else
                     content.put(type, content.get(type) + stack.getAmount());
             }
+        }
+
+        if (updateGUIs)
+        {
+            Gui.update(BanksGUI.class);
+            Gui.update(BankGUI.class);
+            Gui.update(ItemsGroupsGUI.class);
         }
     }
 

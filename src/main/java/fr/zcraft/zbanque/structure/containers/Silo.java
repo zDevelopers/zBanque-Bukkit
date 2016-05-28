@@ -31,6 +31,11 @@
  */
 package fr.zcraft.zbanque.structure.containers;
 
+import fr.zcraft.zbanque.gui.BankGUI;
+import fr.zcraft.zbanque.gui.BanksGUI;
+import fr.zcraft.zbanque.gui.ItemsGroupsGUI;
+import fr.zcraft.zlib.components.gui.Gui;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -118,7 +123,11 @@ public class Silo
     public void update()
     {
         for (Container container : containers)
-            container.update();
+            container.update(false);
+
+        Gui.update(BanksGUI.class);
+        Gui.update(BankGUI.class);
+        Gui.update(ItemsGroupsGUI.class);
     }
 
     /**

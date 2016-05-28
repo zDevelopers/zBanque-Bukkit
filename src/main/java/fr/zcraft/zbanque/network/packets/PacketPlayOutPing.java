@@ -77,7 +77,8 @@ public class PacketPlayOutPing extends PacketPlayOut
     @Override
     public void onError(Throwable exception)
     {
-        PluginLogger.error("Cannot contact the webservice at {0} - the network operations will be disabled", exception, Config.WEBSERVICE.URL.get());
+        PluginLogger.error("Cannot contact the webservice at {0} - the network operations will be disabled", Config.WEBSERVICE.URL.get());
+        PluginLogger.error("Error received: {0}: {1}", exception.getClass().getSimpleName(), exception.getMessage());
         ZBanque.get().setWebServiceEnabled(false);
     }
 }

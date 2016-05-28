@@ -40,6 +40,8 @@ import fr.zcraft.zbanque.utils.LocationUtils;
 import fr.zcraft.zlib.components.gui.ExplorerGui;
 import fr.zcraft.zlib.components.gui.GuiUtils;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.tools.items.ItemStackBuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -107,6 +109,16 @@ public class BankStructureSiloGUI extends ExplorerGui<Container>
         item.setItemMeta(meta);
 
         return item;
+    }
+
+    @Override
+    protected ItemStack getEmptyViewItem()
+    {
+        return new ItemStackBuilder(Material.BARRIER)
+                .title(ChatColor.RED, I.t("There isn't any chest in this silo"))
+                .longLore(ChatColor.GRAY, I.t("Put some chests and/or rerun /zbanque update-structure {0}, and they will be displayed here.", bank.getCodeName()))
+                .hideAttributes()
+                .item();
     }
 
     @Override

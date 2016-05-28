@@ -41,6 +41,7 @@ import fr.zcraft.zlib.components.gui.GuiUtils;
 import fr.zcraft.zlib.components.i18n.I;
 import fr.zcraft.zlib.tools.items.GlowEffect;
 import fr.zcraft.zlib.tools.items.ItemStackBuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -95,6 +96,16 @@ public class BanksGUI extends ExplorerGui<Bank>
         GlowEffect.addGlow(item);
 
         return item;
+    }
+
+    @Override
+    protected ItemStack getEmptyViewItem()
+    {
+        return new ItemStackBuilder(Material.BARRIER)
+                .title(ChatColor.RED, I.t("No bank created"))
+                .longLore(ChatColor.GRAY, I.t("If you are the server owner, checkout the banks section of the configuration file to create banks."))
+                .hideAttributes()
+                .item();
     }
 
     @Override

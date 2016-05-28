@@ -40,6 +40,8 @@ import fr.zcraft.zbanque.utils.Pair;
 import fr.zcraft.zlib.components.gui.ExplorerGui;
 import fr.zcraft.zlib.components.gui.GuiAction;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.tools.items.ItemStackBuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -74,6 +76,16 @@ public class ItemsGroupsGUI extends ExplorerGui<Map.Entry<ItemsGroup, Pair<Long,
     protected ItemStack getViewItem(Map.Entry<ItemsGroup, Pair<Long, Map<BlockType, Long>>> data)
     {
         return ItemsGroup.asRepresentingItem(data);
+    }
+
+    @Override
+    protected ItemStack getEmptyViewItem()
+    {
+        return new ItemStackBuilder(Material.BARRIER)
+                .title(ChatColor.RED, I.t("There isn't any group to display"))
+                .longLore(ChatColor.GRAY, I.t("If you are the server owner, checkout the groups section of the configuration file to create groups."))
+                .hideAttributes()
+                .item();
     }
 
     @GuiAction ("back")

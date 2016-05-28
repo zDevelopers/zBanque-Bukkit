@@ -40,6 +40,8 @@ import fr.zcraft.zlib.components.gui.Gui;
 import fr.zcraft.zlib.components.gui.GuiAction;
 import fr.zcraft.zlib.components.gui.GuiUtils;
 import fr.zcraft.zlib.components.i18n.I;
+import fr.zcraft.zlib.tools.items.ItemStackBuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -91,6 +93,16 @@ public class BankGUI extends ExplorerGui<Map.Entry<BlockType, Long>>
                         I.tn("{white}{0}{gray} item stored", "{white}{0}{gray} items stored", NumberUtils.long2int(amount), amount)
                 )
         );
+    }
+
+    @Override
+    protected ItemStack getEmptyViewItem()
+    {
+        return new ItemStackBuilder(Material.BARRIER)
+                .title(ChatColor.RED, I.t("This bank is empty"))
+                .longLore(ChatColor.GRAY, I.t("Put some content in the chests and it will be displayed here."))
+                .hideAttributes()
+                .item();
     }
 
     @GuiAction ("structure")

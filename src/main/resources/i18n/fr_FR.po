@@ -1,0 +1,361 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-28 17:37+0200\n"
+"PO-Revision-Date: 2016-05-28 18:00+0100\n"
+"Last-Translator: Amaury Carrade\n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: src/main/java/fr/zcraft/zbanque/commands/ContentViewCommand.java:67
+msgid "{white}{0} {gray}item of {1}"
+msgid_plural "{white}{0} {gray}items of {1}"
+msgstr[0] "{white}{0} {gray}{1}"
+msgstr[1] "{white}{0} {gray}{1}"
+
+#: src/main/java/fr/zcraft/zbanque/commands/ExploreCommand.java:59
+msgid "No bank registered."
+msgstr "Aucune banque enregistrée."
+
+#: src/main/java/fr/zcraft/zbanque/commands/ItemsGroupsCommand.java:57
+msgid "{blue}{bold}Grouped items"
+msgstr "{blue}{bold}Regroupements d'éléments"
+
+#: src/main/java/fr/zcraft/zbanque/commands/ListBanksCommand.java:53
+msgid "{white}{bold}{0} {blue}{bold}bank registered"
+msgid_plural "{white}{bold}{0} {blue}{bold}banks registered"
+msgstr[0] "{white}{bold}{0} {blue}{bold}banque enregistrée"
+msgstr[1] "{white}{bold}{0} {blue}{bold}banques enregistrées"
+
+#: src/main/java/fr/zcraft/zbanque/commands/ListBanksCommand.java:58
+msgid ""
+"{darkgray}- {white}{0} {gray}(code name {white}{1}{gray} ; {white}{2}{gray} "
+"item stored in {white}{3}{gray} silo)"
+msgid_plural ""
+"{darkgray}- {white}{0} {gray}(code name {white}{1}{gray} ; {white}{2}{gray} "
+"items stored in {white}{3}{gray} silos)"
+msgstr[0] ""
+"{darkgray}- {white}{0} {gray}(nom de code {white}{1}{gray} ; {white}{2}"
+"{gray} élément stocké dans {white}{3}{gray} silo)"
+msgstr[1] ""
+"{darkgray}- {white}{0} {gray}(nom de code {white}{1}{gray} ; {white}{2}"
+"{gray} éléments stockés dans {white}{3}{gray} silos)"
+
+#: src/main/java/fr/zcraft/zbanque/commands/StructureViewCommand.java:61
+msgid "This bank is empty."
+msgstr "Cette banque est vide."
+
+#: src/main/java/fr/zcraft/zbanque/commands/StructureViewCommand.java:65
+msgid "{gold}{bold}{0} silo in the {1} bank"
+msgid_plural "{gold}{bold}{0} silos in the {1} bank"
+msgstr[0] "{gold}{bold}{0} silo dans la banque {1}"
+msgstr[1] "{gold}{bold}{0} silos dans la banque {1}"
+
+#: src/main/java/fr/zcraft/zbanque/commands/StructureViewCommand.java:71
+msgid "(unknown)"
+msgstr "(inconnu)"
+
+#: src/main/java/fr/zcraft/zbanque/commands/StructureViewCommand.java:71
+msgid "{bold}Silo at {0} {gray}({1} chest)"
+msgid_plural "{bold}Silo at {0} {gray}({1} chests)"
+msgstr[0] "{bold}Silo en {0} {gray}({1} coffre)"
+msgstr[1] "{bold}Silo en {0} {gray}({1} coffres)"
+
+#: src/main/java/fr/zcraft/zbanque/commands/StructureViewCommand.java:75
+msgid "{italic}   (empty)"
+msgstr "{italic}   (vide)"
+
+#: src/main/java/fr/zcraft/zbanque/commands/StructureViewCommand.java:79
+msgid "{darkgray}- {gray}{0} {darkgray}»{white} {1} {gray}item"
+msgid_plural "{darkgray}- {gray}{0} {darkgray}»{white} {1} {gray}items"
+msgstr[0] "{darkgray}- {gray}{0} {darkgray}»{white} {1} {gray}élément"
+msgstr[1] "{darkgray}- {gray}{0} {darkgray}»{white} {1} {gray}éléments"
+
+#: src/main/java/fr/zcraft/zbanque/commands/mixins/WithBankNameCommandMixin.java:50
+msgid "The bank name is required."
+msgstr "Le nom de la banque est requis."
+
+#: src/main/java/fr/zcraft/zbanque/commands/mixins/WithBankNameCommandMixin.java:55
+#, java-format
+msgid "There is no bank called {0} registered"
+msgstr "Il n'y a aucune banque appelée {0}"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankGUI.java:67
+msgid "{black}{0} {reset}({1})"
+msgstr "{black}{0} {reset}({1})"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankGUI.java:77
+msgid "{green}{bold}See the bank structure"
+msgstr "{green}{bold}Voir la structure de la banque"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankGUI.java:78
+#: src/main/java/fr/zcraft/zbanque/gui/BanksGUI.java:91
+msgid "{white}{0}{gray} silo"
+msgid_plural "{white}{0}{gray} silos"
+msgstr[0] "{white}{0}{gray} silo"
+msgstr[1] "{white}{0}{gray} silos"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankGUI.java:93
+#: src/main/java/fr/zcraft/zbanque/gui/BanksGUI.java:90
+msgid "{white}{0}{gray} item stored"
+msgid_plural "{white}{0}{gray} items stored"
+msgstr[0] "{white}{0}{gray} élément stocké"
+msgstr[1] "{white}{0}{gray} éléments stockés"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankGUI.java:102
+msgid "This bank is empty"
+msgstr "Cette banque est vide"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankGUI.java:103
+msgid "Put some content in the chests and it will be displayed here."
+msgstr "Mettez des objets dans les coffres et ils seront affichés ici."
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureGUI.java:67
+msgid "{0} » {black}Silos {reset}({1})"
+msgstr "{0} » {black}Silos {reset}({1})"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureGUI.java:81
+msgid "{green}{bold}Silo with {white}{bold}{0} {green}{bold}chest"
+msgid_plural "{green}{bold}Silo with {white}{bold}{0} {green}{bold}chests"
+msgstr[0] "{green}{bold}Silo avec {white}{bold}{0} {green}{bold}coffre"
+msgstr[1] "{green}{bold}Silo avec {white}{bold}{0} {green}{bold}coffres"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureGUI.java:83
+msgctxt "gui_silo_main_chest"
+msgid "undefined"
+msgstr "inconnue"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureGUI.java:83
+msgid "{gray}Main output: {0}"
+msgstr "{gray}Sortie principale : {0}"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureGUI.java:85
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:89
+msgid "{blue}Content {gray}({0})"
+msgstr "{blue}Contenu {gray}({0})"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureGUI.java:92
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:96
+msgid "{gray}{italic}(empty)"
+msgstr "{gray}{italic}(vide)"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureGUI.java:95
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:99
+msgid "{white}{0}{gray} item of {1}:{2}"
+msgid_plural "{white}{0}{gray} items of {1}"
+msgstr[0] "{white}{0}{gray} {1}:{2}"
+msgstr[1] "{white}{0}{gray} {1}"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureGUI.java:109
+msgid "There isn't any chest in this bank"
+msgstr "Il n'y a aucun coffre dans cette banque."
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureGUI.java:110
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:119
+#, java-format
+msgid ""
+"Put some chests and/or rerun /zbanque update-structure {0}, and they will be "
+"displayed here."
+msgstr ""
+"Mettez des coffres et/ou relancez /zbanque update-structure {0}, et ils "
+"seront affichés ici."
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:70
+msgid "{0} » {black}Silo {reset}({1})"
+msgstr "{0} » {black}Silo {reset}({1})"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:84
+msgid "{ce}INVALID"
+msgstr "{ce}INVALIDE"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:86
+msgid "{gray}Main location: {0}"
+msgstr "{gray}Localisation principale : {0}"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:87
+msgctxt "gui_container_location"
+msgid "none"
+msgstr "aucune"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:87
+msgid "{gray}Secondary location: {0}"
+msgstr "{gray}Localisation secondaire : {0}"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:104
+msgid "{darkgray}» {white}Click{gray} to teleport yourself to this chest"
+msgstr "{darkgray}» {white}Cliquez{gray} pour vous téléporter à ce coffre"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:105
+msgid "{darkred}WARNING! {red}Teleportation to the exact chest location."
+msgstr ""
+"{darkred}ATTENTION ! {red}Téléportation à l'emplacement exact du coffre."
+
+#: src/main/java/fr/zcraft/zbanque/gui/BankStructureSiloGUI.java:118
+msgid "There isn't any chest in this silo"
+msgstr "Il n'y a aucun coffre dans ce silo"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BanksGUI.java:63
+msgid "{black}Banks {reset}({0})"
+msgstr "{black}Banques {reset}({0})"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BanksGUI.java:72
+msgid "{green}Grouped stocks overview"
+msgstr "{green}Vue d'ensemble groupée"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BanksGUI.java:85
+msgid "{green}{bold}{0}"
+msgstr "{green}{bold}{0}"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BanksGUI.java:88
+msgid "{gray}{0}"
+msgstr "{gray}{0}"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BanksGUI.java:93
+msgid "{darkgray}» {white}Click{gray} to open this bank"
+msgstr "{darkgray}» {white}Cliquez{gray} pour ouvrir cette banque"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BanksGUI.java:105
+msgid "No bank created"
+msgstr "Aucune banque créée"
+
+#: src/main/java/fr/zcraft/zbanque/gui/BanksGUI.java:106
+msgid ""
+"If you are the server owner, checkout the banks section of the configuration "
+"file to create banks."
+msgstr ""
+"Si vous êtes le propriétaire du serveur, allez voir la section banks du "
+"fichier de configuration pour créer des banques."
+
+#: src/main/java/fr/zcraft/zbanque/gui/ItemsGroupsGUI.java:67
+msgid "{black}Grouped stocks overview"
+msgstr "{black}Vue d'ensemble groupée"
+
+#: src/main/java/fr/zcraft/zbanque/gui/ItemsGroupsGUI.java:72
+msgid "{green}Go back"
+msgstr "{green}Retour"
+
+#: src/main/java/fr/zcraft/zbanque/gui/ItemsGroupsGUI.java:85
+msgid "There isn't any group to display"
+msgstr "Il n'y a aucun groupe à afficher"
+
+#: src/main/java/fr/zcraft/zbanque/gui/ItemsGroupsGUI.java:86
+msgid ""
+"If you are the server owner, checkout the groups section of the "
+"configuration file to create groups."
+msgstr ""
+"Si vous êtes le propriétaire du serveur, allez voir la section groups du "
+"fichier de configuration pour créer des banques."
+
+#: src/main/java/fr/zcraft/zbanque/structure/BanksManager.java:142
+#, java-format
+msgid ""
+"Cannot register the {0} bank: you must provide a name and the two corners."
+msgstr ""
+"Impossible d'enregistrer la banque {0} : vous devez fournir un nom et deux "
+"coins opposés."
+
+#: src/main/java/fr/zcraft/zbanque/structure/containers/Bank.java:324
+msgid "{cst}{bold}Starting bank structure update for {0}."
+msgstr ""
+"{cst}{bold}Démarrage de la mise à jour de la structure de la banque {0}."
+
+#: src/main/java/fr/zcraft/zbanque/structure/items_groups/ItemsGroup.java:144
+msgid "{white}{0}{gray} item"
+msgid_plural "{white}{0}{gray} items"
+msgstr[0] "{white}{0}{gray} élément"
+msgstr[1] "{white}{0}{gray} éléments"
+
+#: src/main/java/fr/zcraft/zbanque/structure/items_groups/ItemsGroup.java:146
+msgid "{blue}Including..."
+msgstr "{blue}Dont..."
+
+#: src/main/java/fr/zcraft/zbanque/structure/items_groups/ItemsGroup.java:151
+msgid "{gray}- {white}{0}{gray} item of {1} {darkgray}(× {2})"
+msgid_plural "{white}{0}{gray} items of {1} {darkgray}(× {2})"
+msgstr[0] "{gray}- {white}{0}{gray} {1} {darkgray}(× {2})"
+msgstr[1] "{white}{0}{gray} {1} {darkgray}(× {2})"
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:92
+msgid "{cst}Analyzing the bank area..."
+msgstr "{cst}Analyse de la zone..."
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:107
+msgid "{cst}{italic}Analyzing layer at x = {0} "
+msgstr "{cst}{italic}Analyse de la couche à x = {0} "
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:137
+msgid "{darkgray}Found a container from a new silo at {0}"
+msgstr "{darkgray}Conteneur d'un nouveau silo trouvé en {0}"
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:145
+msgid "{darkgray}-> Adding container {0} to the silo {1}"
+msgstr "{darkgray}-> Conteneur {0} ajouté au silo {1}"
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:155
+msgid "{cst}Updating containers content... (approximately {0} second to go)"
+msgid_plural ""
+"{cst}Updating containers content... (approximately {0} seconds to go)"
+msgstr[0] "{cst}Mise à jour du contenu... (environ {0} seconde d'attente)"
+msgstr[1] "{cst}Mise à jour du contenu... (environ {0} secondes d'attente)"
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:169
+msgid "{ce}Some containers were invalid, see console for details"
+msgstr "{ce}Certains conteneurs sont invalide ; consultez la console."
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:177
+msgid "{cst}Extracting silos main chests..."
+msgstr "{cst}Extraction des coffres principaux des silos..."
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:182
+msgid "{cst}Sending data... This may take some time."
+msgstr "{cst}Envoi des données... Cette étape peut prendre du temps."
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:190
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:207
+msgid "{cst}{bold}Update done."
+msgstr "{cst}{bold}Mis à jour."
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:198
+msgid "{ce}Cannot send data to the webservice. {cst}See console for details."
+msgstr ""
+"{ce}Impossible d'envoyer les données au service web. {cst}Consultez la "
+"console pour plus de détails."
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:199
+msgid "{cst}{bold}Structure updated successfully but not sent."
+msgstr ""
+"{cst}{bold}La structure a été mise à jour avec succès, mais pas envoyée au "
+"service web."
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAnalyzer.java:239
+msgid "{cst}Done. Bank structure updated successfully."
+msgstr "{cst}Terminé. Structure de la banque mise à jour avec succès."
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAreaCollector.java:63
+msgid "{cst}Loading bank area... (approximately {0} second to go)"
+msgid_plural "{cst}Loading bank area... (approximately {0} seconds to go)"
+msgstr[0] ""
+"{cst}Chargement de la zone de la baque... (environ {0} seconde d'attente)"
+msgstr[1] ""
+"{cst}Chargement de la zone de la baque... (environ {0} secondes d'attente)"
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAreaCollector.java:75
+msgid "{gray}{italic}Loading layer at x = {0}..."
+msgstr "{gray}{italic}Chargement de la couche à x = {0}..."
+
+#: src/main/java/fr/zcraft/zbanque/structure/update/BankAreaCollector.java:101
+msgid "{gray}Bank area loaded ({0} block)."
+msgid_plural "{gray}Bank area loaded ({0} blocks)."
+msgstr[0] "{gray}Zone de la banque chargée ({0} bloc)."
+msgstr[1] "{gray}Zone de la banque chargée ({0} blocs)."

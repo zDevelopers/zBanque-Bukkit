@@ -54,13 +54,6 @@ groups:
           STONE: 1
           COBBLESTONE: 1
 
-    - name: "Iron"
-      icon: IRON_INGOT
-      relative_amounts:
-          IRON_ORE: 1
-          IRON_INGOT: 1
-          IRON_BLOCK: 9
-
     - name: "Diamonds"
       icon: DIAMOND
       relative_amounts:
@@ -76,19 +69,19 @@ groups:
           GOLD_INGOT: 1
           GOLD_BLOCK: 9
 
+    - name: "Iron"
+      icon: IRON_INGOT
+      relative_amounts:
+          IRON_ORE: 1
+          IRON_INGOT: 1
+          IRON_BLOCK: 9
+
     - name: "Coal"
       icon: COAL
       relative_amounts:
           COAL_ORE: 1
           COAL: 1
           COAL_BLOCK: 9
-
-    - name: "Quartz"
-      icon: QUARTZ
-      relative_amounts:
-          QUARTZ_ORE: 1
-          QUARTZ: 1
-          QUARTZ_BLOCK_0: 4
 
     - name: "Lapis Lazuli"
       icon: INK_SACK_4
@@ -111,6 +104,19 @@ groups:
           REDSTONE: 1
           REDSTONE_BLOCK: 9
 
+    - name: "Snow"
+      icon: SNOW_BALL
+      relative_amounts:
+          SNOW_BALL: 1
+          SNOW_BLOCK: 4
+
+    - name: "Quartz"
+      icon: QUARTZ
+      relative_amounts:
+          QUARTZ_ORE: 1
+          QUARTZ: 1
+          QUARTZ_BLOCK_0: 4
+
     - name: "Glowstone"
       icon: GLOWSTONE_DUST
       relative_amounts:
@@ -123,11 +129,13 @@ groups:
           SLIME_BALL: 1
           SLIME_BLOCK: 9
 
-    - name: "Snow"
-      icon: SNOW_BALL
+    - name: "Clay"
+      icon: CLAY
       relative_amounts:
-          SNOW_BALL: 1
-          SNOW_BLOCK: 4
+          CLAY: 1
+          CLAY_BALL: 0.25
+          HARD_CLAY: 1
+          STAINED_CLAY: 1
 
     - name: "Paper"
       icon: PAPER
@@ -152,6 +160,100 @@ groups:
           EXPLOSIVE_MINECART: 1
           HOPPER_MINECART: 1
           COMMAND_MINECART: 1
+
+    - name: "Boats"
+      icon: BOAT
+      relative_amounts:
+          BOAT: 1
+          BOAT_SPRUCE: 1
+          BOAT_BIRCH: 1
+          BOAT_JUNGLE: 1
+          BOAT_ACACIA: 1
+          BOAT_DARK_OAK: 1
+
+    - name: "Oak wood"
+      icon: WOOD_0
+      relative_amounts:
+          WOOD_0: 1
+          LOG_0: 4
+
+    - name: "Spruce wood"
+      icon: WOOD_1
+      relative_amounts:
+          WOOD_1: 1
+          LOG_1: 4
+
+    - name: "Birch wood"
+      icon: WOOD_2
+      relative_amounts:
+          WOOD_2: 1
+          "LOG:2": 4   # Cannot write LOG_2 because it would be interpreted as Material.LOG_2
+
+    - name: "Jungle wood"
+      icon: WOOD_3
+      relative_amounts:
+          WOOD_3: 1
+          LOG_3: 4
+
+    - name: "Acacia wood"
+      icon: WOOD_0
+      relative_amounts:
+          WOOD_4: 1
+          LOG_2_0: 4
+
+    - name: "Dark Oak wood"
+      icon: WOOD_5
+      relative_amounts:
+          WOOD_5: 1
+          LOG_2_1: 4
+
+    - name: "Apples"
+      icon: APPLE
+      relative_amounts:
+          APPLE: 1
+          GOLDEN_APPLE: 1
+
+    - name: "Potatoes"
+      icon: BAKED_POTATO
+      relative_amounts:
+          POTATO: 1
+          BAKED_POTATO: 1
+
+    - name: "Pork"
+      icon: GRILLED_PORK
+      relative_amounts:
+          PORK: 1
+          GRILLED_PORK: 1
+
+    - name: "Beef"
+      icon: COOKED_BEEF
+      relative_amounts:
+          RAW_BEEF: 1
+          COOKED_BEEF: 1
+
+    - name: "Chicken"
+      icon: COOKED_CHICKEN
+      relative_amounts:
+          RAW_CHICKEN: 1
+          COOKED_CHICKEN: 1
+
+    - name: "Mutton"
+      icon: COOKED_MUTTON
+      relative_amounts:
+          MUTTON: 1
+          COOKED_MUTTON: 1
+
+    - name: "Rabbit"
+      icon: COOKED_RABBIT
+      relative_amounts:
+          RABBIT: 1
+          COOKED_RABBIT: 1
+
+    - name: "Fish"
+      icon: COOKED_FISH
+      relative_amounts:
+          RAW_FISH: 1
+          COOKED_FISH: 1
 
 
 webservice:

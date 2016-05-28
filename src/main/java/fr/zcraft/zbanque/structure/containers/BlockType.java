@@ -222,15 +222,36 @@ public class BlockType
         }
         catch (ConfigurationParseException e)
         {
-            String[] parts = object.toString().trim().split("_");
+            final String str = object.toString().trim();
 
-            String name = StringUtils.join(parts, "_", 0, parts.length - 1);
-            short data;
+            if (str.contains(":"))
+            {
+                String[] parts = str.split(":");
+                short data;
 
-            try { data = Short.parseShort(parts[parts.length - 1]); }
-            catch (NumberFormatException nfe) { throw new ConfigurationParseException("Invalid block type, must be a Material or Material_DATAVALUE", object); }
+                try { data = Short.parseShort(parts[1]); }
+                catch (NumberFormatException nfe)
+                {
+                    throw new ConfigurationParseException("Invalid block type, must be a Material, Material:DATAVALUE or Material_DATAVALUE", object);
+                }
 
-            return new BlockType(ConfigurationValueHandlers.handleEnumValue(name, Material.class), data);
+                return new BlockType(ConfigurationValueHandlers.handleEnumValue(parts[0], Material.class), data);
+            }
+            else
+            {
+                String[] parts = str.split("_");
+
+                String name = StringUtils.join(parts, "_", 0, parts.length - 1);
+                short data;
+
+                try { data = Short.parseShort(parts[parts.length - 1]); }
+                catch (NumberFormatException nfe)
+                {
+                    throw new ConfigurationParseException("Invalid block type, must be a Material, Material:DATAVALUE or Material_DATAVALUE", object);
+                }
+
+                return new BlockType(ConfigurationValueHandlers.handleEnumValue(name, Material.class), data);
+            }
         }
     }
 }
